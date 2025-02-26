@@ -6,6 +6,7 @@ import { type editor } from 'monaco-editor';
 import { Button } from './Button';
 import LoadingDots from './LoadingDots';
 import { ExecutionResult } from '@/types/executionResult';
+import { AIMessage } from '@/types/aiMessage';
 
 enum SupportedLanguages {
   // cpp = 'cpp',
@@ -29,6 +30,8 @@ type Props = {
   setExecutionResult: React.Dispatch<React.SetStateAction<ExecutionResult>>;
   setHintResult: React.Dispatch<React.SetStateAction<string>>;
   setTabIndex?: React.Dispatch<React.SetStateAction<number>>;
+  chatHistory: AIMessage[];
+  setChatHistory: React.Dispatch<React.SetStateAction<AIMessage[]>>;
 };
 
 export default function CodeEditor({
@@ -37,7 +40,10 @@ export default function CodeEditor({
   functionName,
   onChange,
   setExecutionResult,
-  setHintResult
+  setHintResult,
+  setTabIndex,
+  chatHistory,
+  setChatHistory
 }: Props) {
   const starterCodes = {
     cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Hello, C++!" << endl;\n    return 0;\n}',
@@ -59,7 +65,9 @@ export default function CodeEditor({
     const payload = {
       language: currentLanguage,
       code: codeValue,
-      problem_name: functionName
+      problemName: functionName,
+      chat: null,
+      history: chatHistory
     };
 
     try {
@@ -75,6 +83,7 @@ export default function CodeEditor({
 
       setHintResult(data.text);
       setHintLoading(false);
+      setChatHistory(data.newHistory)
     } catch (error) {
       setHintLoading(false);
     }

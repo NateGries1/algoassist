@@ -4,6 +4,7 @@ import { AIMessage } from '@/types/aiMessage';
 import { Button } from './Button';
 import LoadingDots from './LoadingDots';
 import MessageInput from './MessageInput';
+import { ChatMessage } from '@/types/chatMessage';
 
 /*
 const payload = {
@@ -26,6 +27,7 @@ type Props = {
 export default function Chat({ currentLanguage, codeValue, functionName, chatHistory, setChatHistory }: Props) {
     const [hintLoading, setHintLoading] = useState<boolean>(false);
     const [message, setMessage] = useState<string>('');
+    const [messageLog, setMessageLog] = useState<ChatMessage[]>([]);
 
     const handleSend = (message: string) => {
         getHint(message);
@@ -56,6 +58,18 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
             setHintLoading(false);
             setChatHistory(data.newHistory); // Update chatHistory with the new history
             console.log(chatHistory);
+            setMessageLog(
+                [...messageLog,
+                {
+                    role: "user",
+                    text: message
+                },
+                {
+                    role: "model",
+                    text: data.aiResponse
+                }]
+            );
+            console.log("Message Log", messageLog);
         } catch (error) {
             setHintLoading(false);
             console.error(error);
@@ -87,14 +101,14 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
         {!chatHistory || chatHistory.length === 0 ? (
             <div>No chat history yet.</div> // Optional fallback message when chat history is empty
             ) : (
-            chatHistory.slice(1).map((message, index) => (
+            messageLog.slice(1).map((message, index) => (
                 <div
                 key={index}
                 className={`p-3 rounded-lg break-words ${
-                    message.role === "user" ? "bg-blue-700 text-white self-end" : "bg-gray-700 text-white self-start"
+                    message.role === "user" ? "bg-blue-700 text-white self-end max-w-lg" : "bg-gray-700 text-white self-start max-w-lg"
                 }`}
                 >
-                {message.parts[0].text}
+                {message.text}
                 </div>
             ))
         )}
@@ -102,6 +116,7 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
             message={message}
             setMessage={setMessage}
             onSendMessage={handleSend}
+            hintLoading={hintLoading}
         />
 
         <Button

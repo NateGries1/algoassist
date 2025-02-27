@@ -68,7 +68,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         text: text,
-        newHistory: history
+        newHistory: history,
+        aiResponse: text
       },
       {
         status: 200

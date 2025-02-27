@@ -1,12 +1,14 @@
 import { useState } from "react";
+import LoadingDots from './LoadingDots';
 
 type MessageInputProps = {
   onSendMessage: (message: string) => void;
   message: string;
   setMessage: React.Dispatch<React.SetStateAction<string>>;
+  hintLoading: boolean;
 };
 
-export default function MessageInput({ onSendMessage, message, setMessage }: MessageInputProps) {
+export default function MessageInput({ onSendMessage, message, setMessage, hintLoading }: MessageInputProps) {
 
   const handleSend = () => {
     if (message.trim() !== "") {
@@ -35,7 +37,7 @@ export default function MessageInput({ onSendMessage, message, setMessage }: Mes
         onClick={handleSend}
         disabled={message.trim() === ""}
       >
-        Send
+        {hintLoading ? <LoadingDots /> : 'Send'}
       </button>
     </div>
   );

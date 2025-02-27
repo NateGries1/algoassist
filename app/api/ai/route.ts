@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    console.log('Starting chat session');
     const chatSession = model.startChat({
       history: history, // Use provided history from frontend
       generationConfig: {
@@ -34,9 +35,14 @@ export async function POST(req: NextRequest) {
       console.log(message);
     }
 
-    const prompt = chat
-      ? chat
-      : 'Give me a hint to ' + problemName + '. This is my code using ' + language + '.\n' + code;
+    const prompt =
+      chat +
+      'The problem im trying to solve is ' +
+      problemName +
+      '. This is my code using ' +
+      language +
+      '.\n' +
+      code;
     const result = await chatSession.sendMessage(prompt);
     const response = await result.response;
     const text = response.text();

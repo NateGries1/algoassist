@@ -32,6 +32,10 @@ type Props = {
   setTabIndex?: React.Dispatch<React.SetStateAction<number>>;
   chatHistory: AIMessage[];
   setChatHistory: React.Dispatch<React.SetStateAction<AIMessage[]>>;
+  currentLanguage: SupportedLanguages;
+  setCurrentLanguage: React.Dispatch<React.SetStateAction<SupportedLanguages>>;
+  codeValue: string;
+  setCodeValue: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export default function CodeEditor({
@@ -43,7 +47,11 @@ export default function CodeEditor({
   setHintResult,
   setTabIndex,
   chatHistory,
-  setChatHistory
+  setChatHistory,
+  currentLanguage,
+  setCurrentLanguage,
+  codeValue,
+  setCodeValue
 }: Props) {
   const starterCodes = {
     cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Hello, C++!" << endl;\n    return 0;\n}',
@@ -52,10 +60,6 @@ export default function CodeEditor({
     typescript: 'console.log("Hello, TypeScript!");'
   };
 
-  const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguages>(
-    SupportedLanguages.python
-  );
-  const [codeValue, setCodeValue] = useState<string>(starterCodes[currentLanguage]);
   const [runLoading, setRunLoading] = useState<boolean>(false);
 
   const [hintLoading, setHintLoading] = useState<boolean>(false);

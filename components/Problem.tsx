@@ -12,6 +12,13 @@ import { HMR_ACTIONS_SENT_TO_BROWSER } from 'next/dist/server/dev/hot-reloader-t
 import Chat from './Chat';
 import { useState } from 'react';
 
+enum SupportedLanguages {
+  // cpp = 'cpp',
+  python = 'python'
+  // java = 'java',
+  // typescript = 'typescript'
+}
+
 type Props = {
   result: ProblemType;
 };
@@ -35,6 +42,9 @@ export default function Problem({ result }: Props) {
   });
   const [tabIndex, setTabIndex] = React.useState<number>(0);
   const [codeValue, setCodeValue] = useState<string>("");
+  const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguages>(
+      SupportedLanguages.python
+    );
   const [chatHistory, setChatHistory] = React.useState<AIMessage[]>([
     {
       role: 'user',
@@ -87,7 +97,7 @@ export default function Problem({ result }: Props) {
             <Testcases testcases={result.testcases} />
           ) : tabIndex === 2 ? (
             <div>
-              <Chat chatHistory={chatHistory} />
+              <Chat codeValue={codeValue} functionName={result.title} currentLanguage={currentLanguage} />
               <div>{hintResult}</div>
             </div>
           ) : tabIndex === 1 && executionResult.language ? (
@@ -115,6 +125,10 @@ export default function Problem({ result }: Props) {
           setTabIndex={setTabIndex}
           chatHistory={chatHistory}
           setChatHistory={setChatHistory}
+          currentLanguage={currentLanguage}
+          setCurrentLanguage={setCurrentLanguage}
+          codeValue={codeValue}
+          setCodeValue={setCodeValue}
         />
       </div>
     </div>

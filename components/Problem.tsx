@@ -97,7 +97,13 @@ export default function Problem({ result }: Props) {
             <Testcases testcases={result.testcases} />
           ) : tabIndex === 2 ? (
             <div>
-              <Chat codeValue={codeValue} functionName={result.title} currentLanguage={currentLanguage} />
+              <Chat
+                codeValue={codeValue}
+                functionName={result.title}
+                currentLanguage={currentLanguage}
+                chatHistory={chatHistory}
+                setChatHistory={setChatHistory}
+              />
               <div>{hintResult}</div>
             </div>
           ) : tabIndex === 1 && executionResult.language ? (

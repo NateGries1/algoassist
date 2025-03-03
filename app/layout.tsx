@@ -8,7 +8,7 @@ import Footer from '../components/Footer'
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'LC-Pilot',
+  title: 'AlgoAssist',
   description: 'Live AI assistant to streamline the growth of your algorithmic skill.'
 };
 

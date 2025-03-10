@@ -22,12 +22,13 @@ type Props = {
     currentLanguage: string;
     chatHistory: AIMessage[];
     setChatHistory: React.Dispatch<React.SetStateAction<AIMessage[]>>;
+    messageLog: ChatMessage[];
+    setMessageLog: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
 };
 
-export default function Chat({ currentLanguage, codeValue, functionName, chatHistory, setChatHistory }: Props) {
+export default function Chat({ currentLanguage, codeValue, functionName, chatHistory, setChatHistory, messageLog, setMessageLog }: Props) {
     const [hintLoading, setHintLoading] = useState<boolean>(false);
     const [message, setMessage] = useState<string>('');
-    const [messageLog, setMessageLog] = useState<ChatMessage[]>([]);
 
     const handleSend = (message: string) => {
         getHint(message);

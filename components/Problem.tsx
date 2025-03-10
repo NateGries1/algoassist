@@ -11,6 +11,7 @@ import { AIMessage } from '@/types/aiMessage';
 import { HMR_ACTIONS_SENT_TO_BROWSER } from 'next/dist/server/dev/hot-reloader-types';
 import Chat from './Chat';
 import { useState } from 'react';
+import { ChatMessage } from '@/types/chatMessage';
 
 enum SupportedLanguages {
   // cpp = 'cpp',
@@ -68,6 +69,7 @@ export default function Problem({ result }: Props) {
       parts: [{text: ""}]
     }
   */]);
+  const [messageLog, setMessageLog] = useState<ChatMessage[]>([]);
   const [timeLeft, setTimeLeft] = useState(30*60); // 30 minutes in seconds
   const [isFinished, setIsFinished] = useState(false);
   useEffect(() => {
@@ -157,6 +159,8 @@ export default function Problem({ result }: Props) {
                 currentLanguage={currentLanguage}
                 chatHistory={chatHistory}
                 setChatHistory={setChatHistory}
+                messageLog={messageLog}
+                setMessageLog={setMessageLog}
               />
               <div>{hintResult}</div>
             </div>

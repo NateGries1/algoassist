@@ -21,17 +21,11 @@ type TestCase = {
 };
 
 type Props = {
-  language?: SupportedLanguages;
-  className?: string;
   functionName: string;
   params?: string;
   testcases: TestCase[];
   onChange?: (value: string | undefined, event: editor.IModelContentChangedEvent) => void;
   setExecutionResult: React.Dispatch<React.SetStateAction<ExecutionResult>>;
-  setHintResult: React.Dispatch<React.SetStateAction<string>>;
-  setTabIndex?: React.Dispatch<React.SetStateAction<number>>;
-  chatHistory: AIMessage[];
-  setChatHistory: React.Dispatch<React.SetStateAction<AIMessage[]>>;
   currentLanguage: SupportedLanguages;
   setCurrentLanguage: React.Dispatch<React.SetStateAction<SupportedLanguages>>;
   codeValue: string;
@@ -39,15 +33,11 @@ type Props = {
 };
 
 export default function CodeEditor({
-  testcases,
-  params,
   functionName,
+  params,
+  testcases,
   onChange,
   setExecutionResult,
-  setHintResult,
-  setTabIndex,
-  chatHistory,
-  setChatHistory,
   currentLanguage,
   setCurrentLanguage,
   codeValue,
@@ -61,37 +51,6 @@ export default function CodeEditor({
   };
 
   const [runLoading, setRunLoading] = useState<boolean>(false);
-
-  const [hintLoading, setHintLoading] = useState<boolean>(false);
-
-  const getHint = async () => {
-    setHintLoading(true);
-    const payload = {
-      language: currentLanguage,
-      code: codeValue,
-      problemName: functionName,
-      chat: null,
-      history: chatHistory
-    };
-
-    try {
-      const response = await fetch('/api/ai', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
-
-      const data = await response.json();
-
-      setHintResult(data.text);
-      setHintLoading(false);
-      setChatHistory(data.newHistory)
-    } catch (error) {
-      setHintLoading(false);
-    }
-  };
 
   const runCode = async () => {
     setRunLoading(true);
@@ -176,14 +135,6 @@ export default function CodeEditor({
         value={codeValue}
         className={'h-full'}
       />
-      <Button
-        disabled={hintLoading}
-        size={'sm'}
-        className="absolute bottom-0 left-0 m-4 bg-gradient-to-r from-purple-500 to-pink-500 px-2 py-1 transition-all duration-300 ease-in-out hover:cursor-pointer hover:to-pink-400 disabled:bg-neutral-800"
-        onClick={getHint}
-      >
-        {hintLoading ? <LoadingDots /> : 'Hint'}
-      </Button>
       <Button
         disabled={runLoading}
         size={'sm'}

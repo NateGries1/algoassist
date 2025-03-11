@@ -1,4 +1,4 @@
-import NextAuth, { NextAuthOptions } from 'next-auth';
+import { NextAuthOptions } from 'next-auth';
 import { FirestoreAdapter } from '@next-auth/firebase-adapter';
 import GithubProvider from 'next-auth/providers/github';
 import { cert } from 'firebase-admin/app';

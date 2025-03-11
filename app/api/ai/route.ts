@@ -7,9 +7,7 @@ const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 export async function POST(req: NextRequest) {
   const { code, problemName, language, chat, history } = await req.json();
 
-  console.log('code', code);
   if (!code) {
-    console.log('No code provided');
     return NextResponse.json(
       {
         message: 'Bad'
@@ -21,19 +19,12 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    console.log('Starting chat session');
     const chatSession = model.startChat({
       history: history, // Use provided history from frontend
       generationConfig: {
         maxOutputTokens: 200
       }
     });
-
-    console.log('History:');
-
-    for (const message of history) {
-      console.log(message);
-    }
 
     const prompt =
       chat +
@@ -47,24 +38,6 @@ export async function POST(req: NextRequest) {
     const response = await result.response;
     const text = response.text();
 
-    /*const newHistory = [
-      ...history,
-      {
-        role: 'user',
-        parts: [{ text: prompt }]
-      },
-      {
-        role: 'model',
-        parts: [{ text: text }]
-      }
-    ];*/
-
-    console.log('New History:');
-
-    for (const message of history) {
-      console.log(message);
-    }
-
     return NextResponse.json(
       {
         text: text,
@@ -76,7 +49,6 @@ export async function POST(req: NextRequest) {
       }
     );
   } catch (error) {
-    console.error(error);
     return NextResponse.json(
       {
         errror: error

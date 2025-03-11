@@ -1,20 +1,7 @@
 import React, { useState, useEffect} from 'react';
-import Link from 'next/link';
 import { AIMessage } from '@/types/aiMessage';
-import { Button } from './Button';
-import LoadingDots from './LoadingDots';
 import MessageInput from './MessageInput';
 import { ChatMessage } from '@/types/chatMessage';
-
-/*
-const payload = {
-      language: currentLanguage,
-      code: codeValue,
-      problemName: functionName,
-      chat: null,
-      history: chatHistory
-    };
-*/
 
 type Props = {
     codeValue: string;
@@ -35,7 +22,6 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
     };
 
     const getHint = async (message: string) => {
-        console.log(chatHistory);
         setHintLoading(true);
         const payload = {
             language: currentLanguage,
@@ -58,7 +44,6 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
 
             setHintLoading(false);
             setChatHistory(data.newHistory); // Update chatHistory with the new history
-            console.log(chatHistory);
             setMessageLog(
                 [...messageLog,
                 {
@@ -70,10 +55,8 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
                     text: data.aiResponse
                 }]
             );
-            console.log("Message Log", messageLog);
         } catch (error) {
             setHintLoading(false);
-            console.error(error);
         }
     };
 
@@ -98,9 +81,9 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
     }, []);
     
     return (
-      <div className="flex flex-col space-y-2 p-4 bg-gray-900 text-white rounded-lg w-full max-w h-[200px] overflow-y-auto">
+      <div className="flex flex-col justify-between space-y-2 p-4 bg-gray-900 text-white rounded-lg w-full h-full max-w overflow-y-auto mt-auto mb-0">
         {!chatHistory || chatHistory.length === 0 ? (
-            <div>No chat history yet.</div> // Optional fallback message when chat history is empty
+            <div>No chat history yet.</div>
             ) : (
             messageLog.slice(1).map((message, index) => (
                 <div
@@ -119,15 +102,6 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
             onSendMessage={handleSend}
             hintLoading={hintLoading}
         />
-
-        <Button
-            disabled={hintLoading}
-            size={'sm'}
-            className="absolute bottom-0 left-0 m-4 bg-gradient-to-r from-purple-500 to-pink-500 px-2 py-1 transition-all duration-300 ease-in-out hover:cursor-pointer hover:to-pink-400 disabled:bg-neutral-800"
-            onClick={() => getHint(message)}
-        >
-            {hintLoading ? <LoadingDots /> : 'Hint'}
-        </Button>
       </div>
     );
 }

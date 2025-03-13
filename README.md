@@ -1,7 +1,7 @@
 # AlgoAssist
 
 ## About
-AlgoAssist is a project continued from LC Pilot [lcpilot](https://github.com/j1yl/lcpilot). Algo Assist is a technical interview practice tool for computer science/aspiring software engineers. It aims to assist users with preparing for technical coding interviews by allowing users to write and run code, while responding to our AI interviewer.
+AlgoAssist is a project continued from [LC Pilot](https://github.com/j1yl/lcpilot). Algo Assist is a technical interview practice tool for computer science/aspiring software engineers. It aims to assist users with preparing for technical coding interviews by allowing users to write and run code, while responding to our AI interviewer.
 
 ## Features
 - In browser code editor w/ syntax highlighting

@@ -1,7 +1,7 @@
-# LC Pilot
+# AlgoAssist
 
 ## About
-LC Pilot is a semester long project done and submitted in CS 362 at [CSUF](https://fullerton.edu). The goal was to clone leetcode's core functionality and adding on Gemini as our hints. Deployed at [lcpilot.joelee.info](https://lcpilot.joelee.info).
+AlgoAssist is a project continued from LC Pilot [lcpilot](https://github.com/j1yl/lcpilot). Algo Assist is a technical interview practice tool for computer science/aspiring software engineers. It aims to assist users with preparing for technical coding interviews by allowing users to write and run code, while responding to our AI interviewer.
 
 ## Features
 - In browser code editor w/ syntax highlighting
@@ -9,7 +9,7 @@ LC Pilot is a semester long project done and submitted in CS 362 at [CSUF](https
 - Dynamic problem rendering
 - Markdown parsing
 - Runnable code with endpoint /api/run
-- AI hints with endpoint /api/ai
+- AI interviewer with prompt endpoint /api/ai
 
 ## The Way Forward
 - [ ] Mobile support?

@@ -12,7 +12,6 @@ import { HMR_ACTIONS_SENT_TO_BROWSER } from 'next/dist/server/dev/hot-reloader-t
 import Chat from './Chat';
 import { useState } from 'react';
 import { ChatMessage } from '@/types/chatMessage';
-
 enum SupportedLanguages {
   // cpp = 'cpp',
   python = 'python'
@@ -77,7 +76,7 @@ export default function Problem({ result }: Props) {
 
   return (
     <div className="relative grid h-[calc(100vh-80px)] w-full md:grid-cols-2 md:grid-rows-[3fr_1fr_3fr]">
-            {isFinished && (
+      {isFinished && (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex flex-col justify-center items-center z-50 p-4">
           <p className="text-white text-4xl font-bold mb-6">The interview is over</p>
           <div className="flex space-x-4">
@@ -100,7 +99,7 @@ export default function Problem({ result }: Props) {
         <h1 className="text-3xl font-bold">
           {result.lc_number}: {result.title[0].toUpperCase() + result.title.slice(1).toLowerCase()}
         </h1>
-          <p className="text-2xl mt-4">
+        <p className="text-2xl mt-4">
           {String(minutes).padStart(2, "0")}:
           {String(seconds).padStart(2, "0")}
         </p>
@@ -113,6 +112,7 @@ export default function Problem({ result }: Props) {
         </div>
         <MdxLayout>{`${result.content.replaceAll('\\n', '\n')}`}</MdxLayout>
       </div>
+      
       <div className="bg-neutral-900 md:row-start-3">
         <div className="flex items-center">
           {Array.from({ length: 3 }).map((_, index) => (
@@ -167,9 +167,11 @@ export default function Problem({ result }: Props) {
           setCodeValue={setCodeValue}
         />
       </div>
+      
     </div>
   );
 }
+
 
 const formatStdOut = (stdout: string) => {
   let result = stdout;

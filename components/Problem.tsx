@@ -101,7 +101,7 @@ export default function Problem({ result }: Props) {
         <h1 className="text-3xl font-bold">
           {result.lc_number}: {result.title[0].toUpperCase() + result.title.slice(1).toLowerCase()}
         </h1>
-          <p className="text-2xl mt-4">
+        <p className="text-2xl mt-4">
           {String(minutes).padStart(2, "0")}:
           {String(seconds).padStart(2, "0")}
         </p>
@@ -114,6 +114,7 @@ export default function Problem({ result }: Props) {
         </div>
         <MdxLayout>{`${result.content.replaceAll('\\n', '\n')}`}</MdxLayout>
       </div>
+      
       <div className="bg-neutral-900 md:row-start-3">
         <div className="flex items-center">
           {Array.from({ length: 3 }).map((_, index) => (
@@ -168,17 +169,13 @@ export default function Problem({ result }: Props) {
           setCodeValue={setCodeValue}
         />
       </div>
+      
     </div>
   );
 }
 
-const formatError = (stdout: string, stderr: string) => {
-  if (stderr) return (
-    <div className="p-2 rounded-lg bg-red-400">
-      <span className="text-black text-sm font-mediump-1 rounded">{stderr}</span>
-    </div>
-  )
-  
+
+const formatStdOut = (stdout: string) => {
   let result = stdout;
   result
     .replace(/Input:/g, '\nInput:')

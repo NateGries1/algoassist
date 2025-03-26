@@ -12,6 +12,7 @@ import { HMR_ACTIONS_SENT_TO_BROWSER } from 'next/dist/server/dev/hot-reloader-t
 import Chat from './Chat';
 import { useState } from 'react';
 import { ChatMessage } from '@/types/chatMessage';
+import Output from './Output';
 
 enum SupportedLanguages {
   // cpp = 'cpp',
@@ -127,7 +128,7 @@ export default function Problem({ result }: Props) {
         </div>
         <div className="relative overflow-y-scroll p-4 w-full h-full">
           {tabIndex === 0 ? (
-            <Testcases testcases={result.testcases} params={result.params} />
+            <Testcases testcases={result.testcases} params={result.params}/>
           ) : tabIndex === 2 ? (
             <div className="h-full w-full pb-4">
               <Chat
@@ -141,12 +142,11 @@ export default function Problem({ result }: Props) {
               />
             </div>
           ) : tabIndex === 1 && executionResult.language ? (
-            <div className="flex h-full w-full flex-col gap-4">
-              <div className="flex items-center gap-2">
-                Language: {executionResult.language}, Version: {executionResult.version}
-              </div>
-              <div className="rounded-lg bg-neutral-700 p-2 font-mono">
-                {formatStdOut(executionResult.run.stdout)}
+            <div className="flex h-full w-full flex-col">
+              <div className="flex items-center">
+              </div>+
+              <div className="rounded-lg">
+                <Output testcases={result.testcases} params={result.params} stdout={executionResult.run.stdout} stderr={executionResult.run.stderr} />
               </div>
             </div>
           ) : (
@@ -163,6 +163,7 @@ export default function Problem({ result }: Props) {
           setExecutionResult={setExecutionResult}
           currentLanguage={currentLanguage}
           setCurrentLanguage={setCurrentLanguage}
+          setTabIndex={setTabIndex}
           codeValue={codeValue}
           setCodeValue={setCodeValue}
         />
@@ -171,13 +172,23 @@ export default function Problem({ result }: Props) {
   );
 }
 
-const formatStdOut = (stdout: string) => {
+const formatError = (stdout: string, stderr: string) => {
+  if (stderr) return (
+    <div className="p-2 rounded-lg bg-red-400">
+      <span className="text-black text-sm font-mediump-1 rounded">{stderr}</span>
+    </div>
+  )
+  
   let result = stdout;
   result
     .replace(/Input:/g, '\nInput:')
     .replace(/Expected:/g, 'Expected:')
     .replace(/Got:/g, 'Got:')
     .trim();
+    console.log("result", result);
+    return (
+      <span>{JSON.stringify(result)}</span>
+    )
 
   return result.split('\n').map((line, index) => {
     if (line.startsWith('Input:') || line.startsWith('Expected:') || line.startsWith('Got:')) {

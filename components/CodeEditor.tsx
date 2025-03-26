@@ -28,6 +28,7 @@ type Props = {
   setExecutionResult: React.Dispatch<React.SetStateAction<ExecutionResult>>;
   currentLanguage: SupportedLanguages;
   setCurrentLanguage: React.Dispatch<React.SetStateAction<SupportedLanguages>>;
+  setTabIndex: React.Dispatch<React.SetStateAction<number>>;
   codeValue: string;
   setCodeValue: React.Dispatch<React.SetStateAction<string>>;
 };
@@ -40,6 +41,7 @@ export default function CodeEditor({
   setExecutionResult,
   currentLanguage,
   setCurrentLanguage,
+  setTabIndex,
   codeValue,
   setCodeValue
 }: Props) {
@@ -71,9 +73,11 @@ export default function CodeEditor({
       });
 
       const data = await response.json();
+      console.log("runCode", data);
 
       setExecutionResult(data);
       setRunLoading(false);
+      setTabIndex(1);
     } catch (error) {
       setRunLoading(false);
     }

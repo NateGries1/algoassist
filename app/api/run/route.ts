@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
     });
 
     const data = await response.json();
+    console.log(data);
 
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
@@ -55,17 +56,51 @@ function generateRunnableCode(
   switch (language) {
     case 'python':
       version = '3.10.0';
+      // template = [
+      //   code,
+      //   'def run_test_cases():',
+      //   '  testcases = ' + JSON.stringify(testcases),
+      //   '  for testcase in testcases:',
+      //   "    input = testcase['in']",
+      //   "    expected = testcase['out']","
+      //   '    result = ' + problem_name + '(*input)',
+      //   '    print(f"Got: {result}")',
+      //   "if __name__ == '__main__':",
+      //   '  run_test_cases()'
+      // ].join('\n');
       template = [
+        'import json',
+        'import sys',
+        'import io',
+        '',
         code,
+        '',
         'def run_test_cases():',
-        '  testcases = ' + JSON.stringify(testcases),
-        '  for testcase in testcases:',
-        "    input = testcase['in']",
-        "    expected = testcase['out']",
-        '    result = ' + problem_name + '(*input)',
-        '    print(f"Input: {input}, Expected: {expected}, Got: {result}")',
+        "    testcases = json.loads('''" + JSON.stringify(testcases) + "''')",
+        ,
+        '    results = []',
+        '',
+        '    for testcase in testcases:',
+        "        input_data = testcase['in']",
+        "        expected = testcase['out']",
+        '',
+        '        # Capture stdout',
+        '        stdout_backup = sys.stdout',
+        '        sys.stdout = io.StringIO()',
+        '',
+        '        try:',
+        '            result = ' + problem_name + '(*input_data)',
+        '            stdout_output = sys.stdout.getvalue().strip()',
+        '        finally:',
+        '            sys.stdout = stdout_backup',
+        '',
+        '        results.append({"input": input_data, "expected": expected, "output": result, "stdout": stdout_output})',
+        '',
+        '    json_output = json.dumps(results)',
+        '    print(json_output)  # Output to stdout',
+        '',
         "if __name__ == '__main__':",
-        '  run_test_cases()'
+        '    run_test_cases()'
       ].join('\n');
       break;
     default:

@@ -144,7 +144,7 @@ export default function Problem({ result }: Props) {
           ) : tabIndex === 1 && executionResult.language ? (
             <div className="flex h-full w-full flex-col">
               <div className="flex items-center">
-              </div>+
+              </div>
               <div className="rounded-lg">
                 <Output testcases={result.testcases} params={result.params} stdout={executionResult.run.stdout} stderr={executionResult.run.stderr} />
               </div>

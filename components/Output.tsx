@@ -31,7 +31,7 @@ export default function Output({ testcases, params, stdout, stderr }: Props) {
 
   const compareArrays = (expected: any[], actual: any[]): boolean => {
     return (
-      output &&
+      actual &&
       expected.length === actual.length &&
       expected.every((value, index) => value === actual[index])
     );

@@ -78,7 +78,7 @@ export default function Problem({ result }: Props) {
 
   return (
     <div className="relative grid h-[calc(100vh-80px)] w-full md:grid-cols-2 md:grid-rows-[3fr_1fr_3fr]">
-            {isFinished && (
+      {isFinished && (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex flex-col justify-center items-center z-50 p-4">
           <p className="text-white text-4xl font-bold mb-6">The interview is over</p>
           <div className="flex space-x-4">

@@ -78,7 +78,7 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
                 "Do not use markdown at all, only plain text."
             );
         }
-    }, []);
+    });
     
     return (
       <div className="flex flex-col justify-between space-y-2 p-4 bg-gray-900 text-white rounded-lg w-full h-full max-w overflow-y-auto mt-auto mb-0">

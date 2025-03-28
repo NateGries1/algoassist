@@ -11,14 +11,14 @@ type Props = {
 };
 
 export default function Output({ testcases, params, stdout, stderr }: Props) {
+  const [selected, setSelected] = useState<number>(0);
+
   if (stderr)
     return (
       <div className="rounded-lg bg-red-400 p-2">
         <span className="font-mediump-1 rounded text-sm text-black">{stderr}</span>
       </div>
     );
-
-  const [selected, setSelected] = useState<number>(0);
 
   const result: {
     in: any[];
@@ -28,15 +28,22 @@ export default function Output({ testcases, params, stdout, stderr }: Props) {
   if (!testcases) return null;
 
   const output = JSON.parse(stdout.trim());
-  console.log('output: ');
-  console.log(output);
 
-  const isTestCaseValid = (expected: number[], output: number[]): boolean => {
+  const compareArrays = (expected: any[], actual: any[]): boolean => {
     return (
       output &&
-      expected.length === output.length &&
-      expected.every((value, index) => value === output[index])
+      expected.length === actual.length &&
+      expected.every((value, index) => value === actual[index])
     );
+  }
+
+  const isTestCaseValid = (expected: number[], output: number[], type: string): boolean => {
+    switch (type) {
+      case 'array':
+        return compareArrays(expected, output);
+      default:
+        return false;
+    }
   };
 
   return (
@@ -53,7 +60,7 @@ export default function Output({ testcases, params, stdout, stderr }: Props) {
             })}
           >
             <ul
-              className={`list-inside list-disc ${isTestCaseValid(output[i].expected, output[i].output) ? 'marker:text-green-600' : 'marker:text-red-600'}`}
+              className={`list-inside list-disc ${isTestCaseValid(output[i].expected, output[i].output, 'array') ? 'marker:text-green-600' : 'marker:text-red-600'}`}
             >
               <li>Case {i + 1}</li>
             </ul>

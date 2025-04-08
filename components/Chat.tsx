@@ -11,8 +11,6 @@ type Props = {
     setChatHistory: React.Dispatch<React.SetStateAction<AIMessage[]>>;
     messageLog: ChatMessage[];
     setMessageLog: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
-    messageLog: ChatMessage[];
-    setMessageLog: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
 };
 
 export default function Chat({ currentLanguage, codeValue, functionName, chatHistory, setChatHistory, messageLog, setMessageLog }: Props) {

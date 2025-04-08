@@ -128,7 +128,7 @@ export default function Problem({ result }: Props) {
         </div>
         <div className="relative overflow-y-scroll p-4 w-full h-full">
           {tabIndex === 0 ? (
-            <Testcases testcases={result.testcases} params={result.params}/>
+            <Testcases testcases={result.testcases} params={result.params} />
           ) : tabIndex === 2 ? (
             <div className="h-full w-full pb-4">
               <Chat

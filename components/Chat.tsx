@@ -11,6 +11,8 @@ type Props = {
     setChatHistory: React.Dispatch<React.SetStateAction<AIMessage[]>>;
     messageLog: ChatMessage[];
     setMessageLog: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
+    messageLog: ChatMessage[];
+    setMessageLog: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
 };
 
 export default function Chat({ currentLanguage, codeValue, functionName, chatHistory, setChatHistory, messageLog, setMessageLog }: Props) {
@@ -125,7 +127,7 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
     };
 
     useEffect(() => {
-        if (chatHistory.length === 0 && !initialPromptRef.current) {
+        if (chatHistory.length === 0  && !initialPromptRef.current) {
             initialPromptRef.current = true;
             getHint(
                 "You are an AI acting as a technical interviewer for a computer science interview. The interviewee has already been given a 'LeetCode'-style problem to solve within a 30-minute time limit. Your role is to evaluate their approach and guide them without directly providing the solution. Follow these guidelines:" +

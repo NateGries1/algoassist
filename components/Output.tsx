@@ -47,7 +47,7 @@ export default function Output({ testcases, params, stdout, stderr }: Props) {
   };
 
   return (
-    <div className="flex h-full flex-col gap-4 overflow-y-auto font-mono text-xs">
+    <div className="flex h-full flex-col gap-4 text-xs overflow-y-auto font-mono pb-2">
       <div className="flex flex-wrap items-center gap-2">
         {result.map((_, i) => (
           <Button

@@ -146,7 +146,7 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
     }, []);
 
     return (
-        <div className="flex flex-col justify-between space-y-2 p-4 bg-gray-900 text-white rounded-lg w-full h-full max-w overflow-y-auto mt-auto mb-0">
+        <div className="flex flex-col justify-between space-y-2 p-4 pb-6 bg-[#1E1E1E] text-white w-full max-w h-full overflow-y-auto">
             {!chatHistory || chatHistory.length === 0 ? (
                 <div>No chat history yet.</div>
             ) : (
@@ -154,14 +154,14 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
                     <div
                         key={index}
                         className={`p-3 rounded-lg break-words ${
-                            message.role === "user" ? "bg-blue-700 text-white self-end max-w-lg" : "bg-gray-700 text-white self-start max-w-lg"
+                            message.role === "user" ? "bg-purple-800 text-white self-end max-w-lg" : "bg-[#4E4E4E] text-white self-start max-w-lg"
                         }`}
                     >
                         {message.text}
                     </div>
                 ))
             )}
-            <button onClick={startRecognition} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            <button onClick={startRecognition} className="bg-purple-600 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded">
                 Start Speech</button>
             <MessageInput
                 message={message}

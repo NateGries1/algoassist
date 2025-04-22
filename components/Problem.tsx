@@ -124,7 +124,7 @@ export default function Problem({ result }: Props) {
 
           <Panel defaultSize={35}>
             <div className="bg-neutral-800 h-full">
-              <div className="flex items-center bg-neutral-800">
+              <div className="flex items-center bg-neutral-800 pt-4 px-4 space-x-2">
                 {Array.from({ length: 3 }).map((_, index) => (
                   <Button
                     key={index}

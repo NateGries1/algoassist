@@ -4,6 +4,6 @@ module.exports = {
   arrowParens: "always",
   trailingComma: "none",
   printWidth: 100,
-  tabWidth: 2,
+  tabWidth: 4,
   plugins: ["prettier-plugin-tailwindcss"],
 };

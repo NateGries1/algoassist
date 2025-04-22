@@ -21,7 +21,7 @@ export default function RootLayout({
     <SessionWrapper>
       <html lang="en">
         <body
-          className={`${inter.className} flex max-h-screen h-screen flex-col bg-neutral-950 text-xs text-white`}
+          className={`${inter.className} flex max-h-screen h-screen flex-col bg-neutral-800 text-xs text-white`}
         >
           <Navbar />
           {children}

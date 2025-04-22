@@ -18,7 +18,7 @@ const Navbar = (props: Props) => {
       <div className="mx-auto flex h-[40px] w-full items-center justify-between px-4">
         <div className="flex items-center gap-4">
           <Link href="/" className="flex items-center gap-2">
-            <MemoryIcon className="h-6 w-6 text-purple-400" />
+            <MemoryIcon className="h-6 w-6 text-purple-500" />
             <span className="sr-only">LCPilot</span>
           </Link>
           <ul className="flex items-center gap-4">

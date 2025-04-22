@@ -36,6 +36,7 @@
     "react-dom": "^18",
     "react-fast-marquee": "^1.6.4",
     "react-markdown": "^9.0.1",
+    "react-resizable-panels": "^2.1.8",
     "remark-gfm": "^4.0.0",
     "tailwind-merge": "^2.2.1"
   },

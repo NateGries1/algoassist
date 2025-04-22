@@ -13,6 +13,8 @@ import Chat from './Chat';
 import { useState } from 'react';
 import { ChatMessage } from '@/types/chatMessage';
 import Output from './Output';
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
+
 
 enum SupportedLanguages {
   // cpp = 'cpp',
@@ -78,7 +80,7 @@ export default function Problem({ result }: Props) {
 
   return (
     <div className="relative grid h-[calc(100vh-80px)] w-full md:grid-cols-2 md:grid-rows-[3fr_1fr_3fr]">
-            {isFinished && (
+      {isFinished && (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex flex-col justify-center items-center z-50 p-4">
           <p className="text-white text-4xl font-bold mb-6">The interview is over</p>
           <div className="flex space-x-4">
@@ -97,62 +99,74 @@ export default function Problem({ result }: Props) {
           </div>
         </div>
       )}
-      <div className="row-span-2 overflow-y-scroll bg-neutral-900 p-4">
-        <h1 className="text-3xl font-bold">
-          {result.lc_number}: {result.title[0].toUpperCase() + result.title.slice(1).toLowerCase()}
-        </h1>
-          <p className="text-2xl mt-4">
-          {String(minutes).padStart(2, "0")}:
-          {String(seconds).padStart(2, "0")}
-        </p>
-        <div
-          className={`w-max rounded-xl bg-neutral-700 px-2 py-1 text-xs
-          ${result.difficulty === 'easy' ? 'text-green-500' : result.difficulty === 'medium' ? 'text-yellow-500' : result.difficulty === 'hard' ? 'text-red-500' : 'text-gray-500'}
-        `}
-        >
-          {result.difficulty[0].toUpperCase() + result.difficulty.slice(1).toLowerCase()}
-        </div>
-        <MdxLayout>{`${result.content.replaceAll('\\n', '\n')}`}</MdxLayout>
-      </div>
-      <div className="bg-neutral-900 md:row-start-3">
-        <div className="flex items-center">
-          {Array.from({ length: 3 }).map((_, index) => (
-            <Button
-              key={index}
-              className={`rounded-none px-4 py-2 hover:cursor-pointer hover:bg-neutral-700 ${tabIndex === index ? 'bg-neutral-700' : ''}`}
-              onClick={() => setTabIndex(index)}
-            >
-              {index === 0 ? 'Testcases' : index === 1 ? 'Output' : index === 2 ? 'Chat' : ''}
-            </Button>
-          ))}
-        </div>
-        <div className="relative overflow-y-scroll p-4 w-full h-full">
-          {tabIndex === 0 ? (
-            <Testcases testcases={result.testcases} params={result.params} />
-          ) : tabIndex === 2 ? (
-            <div className="h-full w-full pb-4">
-              <Chat
-                codeValue={codeValue}
-                functionName={result.title}
-                currentLanguage={currentLanguage}
-                chatHistory={chatHistory}
-                setChatHistory={setChatHistory}
-                messageLog={messageLog}
-                setMessageLog={setMessageLog}
-              />
-            </div>
-          ) : tabIndex === 1 && executionResult.language ? (
-            <div className="flex h-full w-full flex-col">
-              <div className="flex items-center">
+      <div className="h-[90vh]">
+        <PanelGroup direction="vertical">
+          <Panel defaultSize={65}>
+            <div className="row-span-2 overflow-y-scroll bg-neutral-800 p-4 h-full">
+              <h1 className="text-3xl font-bold">
+                {result.lc_number}: {result.title[0].toUpperCase() + result.title.slice(1).toLowerCase()}
+              </h1>
+              <p className="text-2xl mt-4">
+                {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
+              </p>
+              <div
+                className={`w-max rounded-xl bg-neutral-700 px-2 py-1 text-xs
+                ${result.difficulty === 'easy' ? 'text-green-500' : result.difficulty === 'medium' ? 'text-yellow-500' : result.difficulty === 'hard' ? 'text-red-500' : 'text-gray-500'}
+              `}
+              >
+                {result.difficulty[0].toUpperCase() + result.difficulty.slice(1).toLowerCase()}
               </div>
-              <div className="rounded-lg">
-                <Output testcases={result.testcases} params={result.params} stdout={executionResult.run.stdout} stderr={executionResult.run.stderr} />
+              <MdxLayout>{`${result.content.replaceAll('\\n', '\n')}`}</MdxLayout>
+            </div>
+          </Panel>
+
+          <PanelResizeHandle className="h-2 bg-neutral-900 hover:bg-neutral-600 cursor-row-resize" />
+
+          <Panel defaultSize={35}>
+            <div className="bg-neutral-800 h-full">
+              <div className="flex items-center bg-neutral-800">
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <Button
+                    key={index}
+                    className={`rounded-md px-4 py-2 hover:cursor-pointer hover:bg-neutral-700 ${tabIndex === index ? 'bg-neutral-700' : ''}`}
+                    onClick={() => setTabIndex(index)}
+                  >
+                    {index === 0 ? 'Testcases' : index === 1 ? 'Output' : index === 2 ? 'Chat' : ''}
+                  </Button>
+                ))}
+              </div>
+              <div className="relative overflow-y-scroll h-full w-full p-4 pb-8">
+                {tabIndex === 0 ? (
+                  <Testcases testcases={result.testcases} params={result.params} />
+                ) : tabIndex === 2 ? (
+                  <div className="h-full w-full">
+                    <Chat
+                      codeValue={codeValue}
+                      functionName={result.title}
+                      currentLanguage={currentLanguage}
+                      chatHistory={chatHistory}
+                      setChatHistory={setChatHistory}
+                      messageLog={messageLog}
+                      setMessageLog={setMessageLog}
+                    />
+                  </div>
+                ) : tabIndex === 1 && executionResult.language ? (
+                  <div className="flex h-full w-full flex-col">
+                    <div className="flex items-center"></div>
+                    <Output
+                      testcases={result.testcases}
+                      params={result.params}
+                      stdout={executionResult.run.stdout}
+                      stderr={executionResult.run.stderr}
+                    />
+                  </div>
+                ) : (
+                  <div>No output yet</div>
+                )}
               </div>
             </div>
-          ) : (
-            <div>No output yet</div>
-          )}
-        </div>
+          </Panel>
+        </PanelGroup>
       </div>
 
       <div className="md:row-span-3">
@@ -171,28 +185,3 @@ export default function Problem({ result }: Props) {
     </div>
   );
 }
-
-const formatStdOut = (stdout: string) => {
-  let result = stdout;
-  result
-    .replace(/Input:/g, '\nInput:')
-    .replace(/Expected:/g, 'Expected:')
-    .replace(/Got:/g, 'Got:')
-    .trim();
-    console.log("result", result);
-    return (
-      <span>{JSON.stringify(result)}</span>
-    )
-
-  return result.split('\n').map((line, index) => {
-    if (line.startsWith('Input:') || line.startsWith('Expected:') || line.startsWith('Got:')) {
-      return (
-        <span key={index}>
-          {line}
-          <br />
-        </span>
-      );
-    }
-    return <span key={index}>{line}</span>;
-  });
-};

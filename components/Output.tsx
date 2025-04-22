@@ -55,7 +55,7 @@ export default function Output({ testcases, params, stdout, stderr }: Props) {
             onClick={() => setSelected(i)}
             className={buttonVariants({
               variant: 'ghost',
-              size: 'sm',
+              size: 'md',
               className: selected === i ? 'bg-neutral-700' : ''
             })}
           >

@@ -9,7 +9,37 @@ const nextConfig = {
         protocol: 'https',
         hostname: '**.githubusercontent.com',
         port: ''
-      }
+      },
+      {
+        protocol: 'https',
+        hostname: 'github.com',
+        port: ''
+      },
+      {
+        protocol: 'https',
+        hostname: 'pngimg.com',
+        port: ''
+      },
+      {
+        protocol: 'https',
+        hostname: '**.wikimedia.org',
+        port: ''
+      },
+      {
+        protocol: 'https',
+        hostname: 'wildfiresocial.com',
+        port: ''
+      },
+      {
+        protocol: 'https',
+        hostname: 'freepnglogo.com',
+        port: ''
+      },
+      {
+        protocol: 'https',
+        hostname: '**.logodownload.org',
+        port: ''
+      },
     ]
   }
 };

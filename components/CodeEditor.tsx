@@ -83,6 +83,7 @@ export default function CodeEditor({
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     setCodeValue(starterCodes[currentLanguage]);
   }, [currentLanguage]);

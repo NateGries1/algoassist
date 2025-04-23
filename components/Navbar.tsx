@@ -7,6 +7,7 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import { Suspense } from 'react';
 import OpenProfile from './profile/OpenProfile';
 import Profile from './profile/Modal';
+import Image from 'next/image';
 
 type Props = {};
 
@@ -19,7 +20,13 @@ const Navbar = (props: Props) => {
         <div className="flex items-center gap-4">
         <Link href="/" className="flex items-center gap-2">
           <span className="sr-only">LCPilot</span>
-          <img src="/algoassist-logo.png" alt="LCPilot Logo" className="h-8 w-8 text-purple-500" />
+          <Image
+            src="/algoassist-logo.png"
+            alt="LCPilot Logo"
+            width={256}
+            height={256}
+            className="h-8 w-8 text-purple-500"
+          />
         </Link>
         </div>
         <div className="relative flex items-center">

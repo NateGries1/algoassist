@@ -14,20 +14,13 @@ const Navbar = (props: Props) => {
   const { data: session } = useSession();
 
   return (
-    <nav className="w-full bg-white/10 backdrop-blur-md">
-      <div className="mx-auto flex h-[40px] w-full items-center justify-between px-4">
+    <nav className="fixed z-10 w-full">
+      <div className="mx-auto flex h-[60px] w-full items-center justify-between p-10">
         <div className="flex items-center gap-4">
-          <Link href="/" className="flex items-center gap-2">
-            <MemoryIcon className="h-6 w-6 text-purple-500" />
-            <span className="sr-only">LCPilot</span>
-          </Link>
-          <ul className="flex items-center gap-4">
-            <li>
-              <Link href="https://github.com/j1yl/lcpilot" target="_blank">
-                Source
-              </Link>
-            </li>
-          </ul>
+        <Link href="/" className="flex items-center gap-2">
+          <span className="sr-only">LCPilot</span>
+          <img src="/algoassist-logo.png" alt="LCPilot Logo" className="h-8 w-8 text-purple-500" />
+        </Link>
         </div>
         <div className="relative flex items-center">
           {session ? (

@@ -14,7 +14,7 @@ import { useState } from 'react';
 import { ChatMessage } from '@/types/chatMessage';
 import Output from './Output';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
-
+import Navbar from './Navbar';
 
 enum SupportedLanguages {
   // cpp = 'cpp',
@@ -79,7 +79,8 @@ export default function Problem({ result }: Props) {
   };
 
   return (
-    <div className="relative grid h-[calc(100vh-80px)] w-full md:grid-cols-2 md:grid-rows-[3fr_1fr_3fr]">
+    <div className="relative h-screen w-full grid md:grid-cols-2">
+
       {isFinished && (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex flex-col justify-center items-center z-50 p-4">
           <p className="text-white text-4xl font-bold mb-6">The interview is over</p>
@@ -99,13 +100,18 @@ export default function Problem({ result }: Props) {
           </div>
         </div>
       )}
-      <div className="h-[90vh]">
+      
+      {/* Left side: Problem description and testcases/output/chat */}
+      <div className="h-screen overflow-hidden">
         <PanelGroup direction="vertical">
           <Panel defaultSize={65}>
-            <div className="row-span-2 overflow-y-scroll bg-neutral-800 p-4 h-full">
-              <h1 className="text-3xl font-bold">
-                {result.lc_number}: {result.title[0].toUpperCase() + result.title.slice(1).toLowerCase()}
-              </h1>
+            <div className="overflow-y-auto bg-neutral-800 p-4 h-full">
+            <div className="flex justify-between items-center">
+                <h1 className="text-3xl font-bold">
+                  {result.lc_number}: {result.title[0].toUpperCase() + result.title.slice(1).toLowerCase()}
+                </h1>
+                <a href="/" className="text-white bg-purple-500 font-semibold px-3 py-2 rounded-lg">Home</a>
+              </div>
               <p className="text-2xl mt-4">
                 {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
               </p>
@@ -123,7 +129,7 @@ export default function Problem({ result }: Props) {
           <PanelResizeHandle className="h-2 bg-neutral-900 hover:bg-neutral-600 cursor-row-resize" />
 
           <Panel defaultSize={35}>
-            <div className="bg-neutral-800 h-full">
+            <div className="bg-neutral-800 h-full flex flex-col">
               <div className="flex items-center bg-neutral-800 pt-4 px-4 space-x-2">
                 {Array.from({ length: 3 }).map((_, index) => (
                   <Button
@@ -135,7 +141,7 @@ export default function Problem({ result }: Props) {
                   </Button>
                 ))}
               </div>
-              <div className="relative overflow-y-scroll h-full w-full p-4 pb-8">
+              <div className="flex-1 overflow-y-auto p-4">
                 {tabIndex === 0 ? (
                   <Testcases testcases={result.testcases} params={result.params} />
                 ) : tabIndex === 2 ? (
@@ -169,7 +175,8 @@ export default function Problem({ result }: Props) {
         </PanelGroup>
       </div>
 
-      <div className="md:row-span-3">
+      {/* Right side: Code editor */}
+      <div className="h-screen">
         <DyanmicCodeEditor
           functionName={result.function}
           params={result.params}

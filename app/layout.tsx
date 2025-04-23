@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import Navbar from '@/components/Navbar';
 import SessionWrapper from '@/components/SessionWrapper';
 import Footer from '../components/Footer'
-
+import Navbar from '@/components/Navbar';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -21,11 +20,10 @@ export default function RootLayout({
     <SessionWrapper>
       <html lang="en">
         <body
-          className={`${inter.className} flex max-h-screen h-screen flex-col bg-neutral-800 text-xs text-white`}
+          className={`${inter.className} flex max-h-screen h-screen flex-col bg-neutral-800 text-xs text-white overscroll-y-none`}
         >
-          <Navbar />
+
           {children}
-          <Footer/>
         </body>
       </html>
     </SessionWrapper>

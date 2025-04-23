@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef,useCallback } from 'react';
 import { AIMessage } from '@/types/aiMessage';
 import { ChatMessage } from '@/types/chatMessage';
 import LoadingDots from './LoadingDots';
-import { handleSpeak } from './SpeechPlayer';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 type Props = {
@@ -61,7 +60,21 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
                 }]
             );
             console.log(data.aiResponse)
-            handleSpeak(data.aiResponse,audioRef, isMutedRef)
+
+            // Play the audio response
+            const res = await fetch('/api/tts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: data.aiResponse }),
+            });
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const audio = new Audio(url);
+    
+            audio.muted = isMutedRef.current;
+            audioRef.current = audio;
+    
+            await audio.play();
         } catch (error) {
             setHintLoading(false);
         }

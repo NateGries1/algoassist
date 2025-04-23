@@ -5,8 +5,6 @@ import LoadingDots from './LoadingDots';
 import { handleSpeak } from './SpeechPlayer';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
-const accessToken = process.env.GOOGLE_ACCESS_TOKEN!;
-const projectId = process.env.GOOGLE_PROJECT_ID!;
 type Props = {
     codeValue: string;
     functionName: string;
@@ -21,6 +19,9 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
     const [hintLoading, setHintLoading] = useState<boolean>(false);
     const [message, setMessage] = useState<string>('');
     const [recording, setRecording ] = useState<boolean>(false);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+    const [isMuted, setIsMuted] = useState<boolean> (false)
+    const isMutedRef = useRef(false)
     const initialPromptRef = useRef(false); // Using a ref
     const { data: session } = useSession();
     const recognitionRef = useRef<(typeof window.SpeechRecognition | typeof window.webkitSpeechRecognition) | null >(null);
@@ -60,11 +61,22 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
                 }]
             );
             console.log(data.aiResponse)
-            handleSpeak(data.aiResponse)
+            handleSpeak(data.aiResponse,audioRef, isMutedRef)
         } catch (error) {
             setHintLoading(false);
         }
     };
+    const toggleMute = () => {
+        const newMuted = !isMuted;
+        setIsMuted(newMuted);
+        isMutedRef.current = newMuted;
+      
+        // If something is currently playing, update its mute state in real-time
+        if (audioRef.current) {
+          audioRef.current.muted = newMuted;
+        }
+      };
+      
     const handleSend = useCallback((message: string) => {
         setMessageLog((prev) => [
           ...prev,
@@ -248,6 +260,23 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
             </svg>
 
             </button>
+
+            <button onClick={toggleMute} className='bg-purple-600 hover:bg-purple-800 text-white font-bold p-2 rounded-full'>
+                {isMuted ? (
+                    // Muted Icon (Speaker with X)
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 497 431" fill="white" width="20" height="20">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M255.492 1.74627C261.096 4.5481 264.635 10.2751 264.635 16.5397V413.493C264.635 419.758 261.096 425.484 255.492 428.286C249.889 431.088 243.184 430.482 238.172 426.724L110.265 330.794H49.6191C22.2152 330.794 0 308.578 0 281.175V148.857C0 121.454 22.2152 99.2382 49.6191 99.2382H110.265L238.172 3.30795C243.184 -0.450831 249.889 -1.05546 255.492 1.74627ZM231.556 49.6191L125.702 129.01C122.839 131.157 119.357 132.318 115.778 132.318H49.6191C40.4846 132.318 33.0794 139.723 33.0794 148.857V281.175C33.0794 290.31 40.4846 297.715 49.6191 297.715H115.778C119.357 297.715 122.839 298.876 125.702 301.023L231.556 380.413V49.6191ZM491.348 137.162C497.805 143.621 497.805 154.093 491.348 160.553L436.883 215.016L491.348 269.48C497.805 275.939 497.805 286.411 491.348 292.87C484.888 299.329 474.415 299.329 467.955 292.87L413.493 238.407L359.031 292.87C352.57 299.329 342.097 299.329 335.637 292.87C329.179 286.411 329.179 275.939 335.637 269.48L390.102 215.016L335.637 160.553C329.179 154.093 329.179 143.621 335.637 137.162C342.097 130.703 352.57 130.703 359.031 137.162L413.493 191.625L467.955 137.162C474.415 130.703 484.888 130.703 491.348 137.162Z" />
+                    </svg>
+                ) : (
+                    // Unmuted Icon (Speaker with sound waves)
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 432" fill="white" width="20" height="20">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M248.75 1.69334C254.462 4.48731 258.085 10.2914 258.085 16.6506V416.266C258.085 422.626 254.462 428.431 248.75 431.225C243.037 434.018 236.231 433.313 231.212 429.41L107.273 333.012H49.9519C22.3642 333.012 0 310.647 0 283.061V149.856C0 122.268 22.3642 99.9037 49.9519 99.9037H107.273L231.212 3.50759C236.231 -0.396817 243.037 -1.1008 248.75 1.69334ZM224.783 50.6951L123.209 129.698C120.286 131.971 116.689 133.205 112.986 133.205H49.9519C40.7561 133.205 33.3013 140.66 33.3013 149.856V283.061C33.3013 292.257 40.7561 299.711 49.9519 299.711H112.986C116.689 299.711 120.286 300.947 123.209 303.218L224.783 382.222V50.6951ZM342.284 94.8433C348.408 90.7682 356.676 92.4299 360.752 98.5547C408.133 169.769 408.133 263.146 360.752 334.361C356.676 340.485 348.408 342.147 342.284 338.071C336.156 333.998 334.494 325.729 338.57 319.602C380.004 257.328 380.004 175.587 338.57 113.312C334.494 107.187 336.156 98.9183 342.284 94.8433ZM422.21 14.3342C417.451 8.72156 409.046 8.0269 403.435 12.783C397.823 17.5387 397.127 25.9443 401.883 31.5569C492.103 138.03 492.103 294.887 401.883 401.36C397.127 406.971 397.823 415.376 403.435 420.132C409.046 424.891 417.451 424.195 422.21 418.583C520.852 302.172 520.852 130.745 422.21 14.3342Z" />
+                    </svg>
+                )}
+                </button>
+
+
+
             <button
                 className="bg-purple-600 hover:bg-purple-800 text-white font-bold p-2 rounded-full"
                 onClick={handleSendInput}

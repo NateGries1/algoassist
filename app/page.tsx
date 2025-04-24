@@ -44,9 +44,6 @@ export default async function Home() {
           <ul role="list" className="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2">
             {result
               .sort((a, b) => a.lc_number - b.lc_number)
-              .filter((a) => {
-                return a.id === 'SNGy8ITD0q2Cmc94bguX';
-              })
               .map((doc) => (
                 <li key={doc.id}>
                   <Link

@@ -18,6 +18,7 @@ export default function Testcases({ testcases, params }: Props) {
   }[] = JSON.parse(testcases);
 
   if (!testcases) return null;
+  console.log(result);
 
   return (
     <div className="flex h-full flex-col gap-4 text-xs overflow-y-auto font-mono pb-2">

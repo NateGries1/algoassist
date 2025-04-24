@@ -7,6 +7,7 @@ import { Button } from './Button';
 import LoadingDots from './LoadingDots';
 import { ExecutionResult } from '@/types/executionResult';
 import { AIMessage } from '@/types/aiMessage';
+import { Problem } from '@/types/problem';
 
 enum SupportedLanguages {
   // cpp = 'cpp',
@@ -15,15 +16,25 @@ enum SupportedLanguages {
   // typescript = 'typescript'
 }
 
+const snippets = {
+  "linked list": {
+      "python": [
+          "# Definition for singly-linked list. Modify it as needed.",
+          "class ListNode:",
+          "    def __init__(self, val=0, next=None):",
+          "        self.val = val",
+          "        self.next = next"
+      ]
+  }
+}
+
 type TestCase = {
   in: any[];
   out: any[];
 };
 
 type Props = {
-  functionName: string;
-  params?: string;
-  testcases: TestCase[];
+  problem: Problem;
   onChange?: (value: string | undefined, event: editor.IModelContentChangedEvent) => void;
   setExecutionResult: React.Dispatch<React.SetStateAction<ExecutionResult>>;
   currentLanguage: SupportedLanguages;
@@ -34,9 +45,7 @@ type Props = {
 };
 
 export default function CodeEditor({
-  functionName,
-  params,
-  testcases,
+  problem,
   onChange,
   setExecutionResult,
   currentLanguage,
@@ -45,6 +54,17 @@ export default function CodeEditor({
   codeValue,
   setCodeValue
 }: Props) {
+  const functionName = problem.function;
+  const params = problem.params;
+  const testcases = JSON.parse(problem.testcases);
+  const param_type = problem.param_type;
+
+  let prefix = "";
+  if (param_type.includes("linked list")) {
+    fetchSnippets();
+    prefix += snippets['linked list'][currentLanguage].join('\n') + "\n\n";
+  }
+
   const starterCodes = {
     cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Hello, C++!" << endl;\n    return 0;\n}',
     python: `def ${functionName}(${params}):\n    pass`,
@@ -60,7 +80,8 @@ export default function CodeEditor({
       language: currentLanguage,
       code: codeValue,
       problem_name: functionName,
-      testcases: testcases
+      testcases: testcases,
+      problem: problem,
     };
 
     try {
@@ -85,7 +106,7 @@ export default function CodeEditor({
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    setCodeValue(starterCodes[currentLanguage]);
+    setCodeValue(prefix + starterCodes[currentLanguage]);
   }, [currentLanguage]);
 
   return (
@@ -107,7 +128,7 @@ export default function CodeEditor({
           className="border border-transparent hover:cursor-pointer hover:bg-neutral-700"
           type="button"
           title="Reset to default code"
-          onClick={() => setCodeValue(starterCodes[currentLanguage])}
+          onClick={() => setCodeValue(prefix + starterCodes[currentLanguage])}
         >
           <svg
             width="15"
@@ -151,3 +172,9 @@ export default function CodeEditor({
     </div>
   );
 }
+
+const fetchSnippets = async () => {
+  const response = await fetch('/snippets.json');
+  const data = await response.json();
+  console.log(data);
+};

@@ -16,7 +16,7 @@ export default function Output({ testcases, params, stdout, stderr }: Props) {
   if (stderr)
     return (
       <div className="rounded-lg bg-red-400 p-2">
-        <span className="font-mediump-1 rounded text-sm text-black">{stderr}</span>
+        <span className="font-medium p-1 rounded text-sm text-black">{stderr}</span>
       </div>
     );
 

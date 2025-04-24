@@ -78,6 +78,8 @@ export default function Problem({ result }: Props) {
     window.location.href = '/'; // This will navigate to the homepage
   };
 
+  console.log(result.param_type);
+
   return (
     <div className="relative h-screen w-full grid md:grid-cols-2">
 
@@ -178,9 +180,7 @@ export default function Problem({ result }: Props) {
       {/* Right side: Code editor */}
       <div className="h-screen">
         <DyanmicCodeEditor
-          functionName={result.function}
-          params={result.params}
-          testcases={JSON.parse(result.testcases)}
+          problem={result}
           setExecutionResult={setExecutionResult}
           currentLanguage={currentLanguage}
           setCurrentLanguage={setCurrentLanguage}

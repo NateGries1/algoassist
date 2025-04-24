@@ -46,6 +46,9 @@ export default function Output({ testcases, params, stdout, stderr }: Props) {
     }
   };
 
+  console.log('Result:', result);
+  console.log('Output:', output);
+
   return (
     <div className="flex h-full flex-col gap-4 text-xs overflow-y-auto font-mono pb-2">
       <div className="flex flex-wrap items-center gap-2">

@@ -78,8 +78,6 @@ export default function Problem({ result }: Props) {
     window.location.href = '/'; // This will navigate to the homepage
   };
 
-  console.log(result.param_type);
-
   return (
     <div className="relative h-screen w-full grid md:grid-cols-2">
 

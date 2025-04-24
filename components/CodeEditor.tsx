@@ -61,7 +61,6 @@ export default function CodeEditor({
 
   let prefix = "";
   if (param_type.includes("linked list")) {
-    fetchSnippets();
     prefix += snippets['linked list'][currentLanguage].join('\n') + "\n\n";
   }
 
@@ -172,9 +171,3 @@ export default function CodeEditor({
     </div>
   );
 }
-
-const fetchSnippets = async () => {
-  const response = await fetch('/snippets.json');
-  const data = await response.json();
-  console.log(data);
-};

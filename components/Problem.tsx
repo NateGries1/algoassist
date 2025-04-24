@@ -125,7 +125,7 @@ export default function Problem({ result }: Props) {
 
     {/* Subheading with encouragement */}
     <p className="text-gray-300 mb-6 text-lg max-w-lg text-center">
-      You've completed the interview—great job! Now, take a moment to review your performance and see where you can improve.
+      You have completed the interview—great job! Now, take a moment to review your performance and see where you can improve.
     </p>
 
     {/* Buttons for next actions */}

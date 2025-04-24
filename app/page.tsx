@@ -26,8 +26,8 @@ export default async function Home() {
       {/* Background gradient behind Hero */}
       <div className="bg-[radial-gradient(circle_500px_at_50%_200px,#3e3e3e,transparent)]">
         <Hero />
+        <Features/>
       </div>
-      <Features/>
       
       {/* Styled Problem List Section */}
       <div className="py-24">

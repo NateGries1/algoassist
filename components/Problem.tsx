@@ -50,7 +50,7 @@ export default function Problem({ result }: Props) {
     );
   const [chatHistory, setChatHistory] = React.useState<AIMessage[]>([]);
   const [messageLog, setMessageLog] = useState<ChatMessage[]>([]);
-  const [timeLeft, setTimeLeft] = useState(30*60); // 30 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(20); // 30 minutes in seconds
   const [isFinished, setIsFinished] = useState(false);
   useEffect(() => {
     if (timeLeft <= 0) {
@@ -75,9 +75,19 @@ export default function Problem({ result }: Props) {
 
   // Handle the results functionality (navigate to home page)
   const handleResults = () => {
-    window.location.href = '/'; // This will navigate to the homepage
+    const currentPath = window.location.pathname;
+    window.location.href = `${currentPath}/results`;
   };
 
+  useEffect(() => {
+    if (isFinished) {
+      localStorage.setItem('currentLangugage', currentLanguage);
+      localStorage.setItem('codeValue', codeValue);
+      localStorage.setItem('problemName', result.title);
+      localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+
+    }
+  }, [isFinished]);
   return (
     <div className="relative h-screen w-full grid md:grid-cols-2">
 

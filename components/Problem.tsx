@@ -52,18 +52,20 @@ export default function Problem({ result }: Props) {
   const [messageLog, setMessageLog] = useState<ChatMessage[]>([]);
   const [timeLeft, setTimeLeft] = useState(20); // 30 minutes in seconds
   const [isFinished, setIsFinished] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
   useEffect(() => {
-    if (timeLeft <= 0) {
-      setIsFinished(true);
+    if (!hasStarted) return;
+    if (timeLeft <= 0 ){
+      setIsFinished(true)
       return;
     }
-
     const interval = setInterval(() => {
       setTimeLeft((prev) => prev - 1);
     }, 1000);
-
+  
     return () => clearInterval(interval);
-  }, [timeLeft]);
+  }, [hasStarted, timeLeft]);
+  
 
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
@@ -90,26 +92,63 @@ export default function Problem({ result }: Props) {
   }, [isFinished]);
   return (
     <div className="relative h-screen w-full grid md:grid-cols-2">
-
-      {isFinished && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex flex-col justify-center items-center z-50 p-4">
-          <p className="text-white text-4xl font-bold mb-6">The interview is over</p>
-          <div className="flex space-x-4">
-            <button
-              onClick={handleResults}
-              className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out"
-            >
-              Results
-            </button>
-            <button
-              onClick={handleRestart}
-              className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition duration-300 ease-in-out"
-            >
-              Restart
-            </button>
+      {!hasStarted && (
+        <div className="fixed inset-0 z-50 bg-slate-950 bg-opacity-50 backdrop-blur-sm flex items-center justify-center">
+          <div className="bg-black/50 border border-gray-500 text-white rounded-lg p-8 max-w-xl w-full text-center space-y-6">
+            <h2 className="text-4xl font-bold pt-5 px-5">Ready to start your interview? </h2>
+            <p className="text-lg text-gray-300">This interview will take {Math.floor(timeLeft / 60)} minutes to complete.</p>
+            <div className="flex justify-center space-x-4 pb-5">
+              <button
+                onClick={() => setHasStarted(true)}
+                className="bg-purple-500 hover:bg-purple-600 text-white font-semibold px-6 py-2 rounded-lg transition duration-300"
+              >
+                Start Interview
+              </button>
+              <a
+                href="/problems"
+                className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-6 py-2 rounded-lg transition duration-300"
+              >
+                Cancel
+              </a>
+            </div>
           </div>
         </div>
       )}
+
+      {isFinished && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm bg-opacity-75 flex flex-col justify-center items-center z-50 p-8">
+  {/* Main message */}
+  <div className="bg-black/50 border border-gray-500 rounded-md p-10 flex flex-col justify-center items-center w-full max-w-xl">
+    <h2 className="text-white text-4xl font-semibold mb-4 text-center">
+      Your interview session has concluded.
+    </h2>
+
+    {/* Subheading with encouragement */}
+    <p className="text-gray-300 mb-6 text-lg max-w-lg text-center">
+      You've completed the interview—great job! Now, take a moment to review your performance and see where you can improve.
+    </p>
+
+    {/* Buttons for next actions */}
+    <div className="flex space-x-6 mb-6">
+      <button
+        onClick={handleResults}
+        className="bg-purple-500 text-sm text-white px-8 py-3 rounded-lg hover:bg-purple-600 transition duration-300 ease-in-out"
+      >
+        View Results
+      </button>
+      <button
+        onClick={handleRestart}
+        className="bg-gray-600 text-sm text-white px-8 py-3 rounded-lg hover:bg-gray-700 transition duration-300 ease-in-out"
+      >
+        Start a New Interview
+      </button>
+    </div>
+  </div>
+</div>
+
+      )}
+
+
       
       {/* Left side: Problem description and testcases/output/chat */}
       <div className="h-screen overflow-hidden">

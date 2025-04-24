@@ -35,7 +35,6 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
         };
 
         try {
-            console.log(JSON.stringify(payload))
             const response = await fetch('/api/ai', {
                 method: 'POST',
                 headers: {
@@ -59,7 +58,6 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
                     text: data.aiResponse
                 }]
             );
-            console.log(data.aiResponse)
 
             // Play the audio response
             const res = await fetch('/api/tts', {
@@ -105,7 +103,6 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
       useEffect(() => {
         if (typeof window !== 'undefined') {
           const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-          console.log("SpeechRecognition:", SpeechRecognition);
       
           if (SpeechRecognition) {
             const recognition = new SpeechRecognition();
@@ -115,7 +112,6 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
       
             recognition.onresult = (event: SpeechRecognitionEvent) => {
               const text = event.results[0][0].transcript;
-              console.log("Speech recognition captured:", text);
               setMessage(text);
             };
       

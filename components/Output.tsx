@@ -8,9 +8,10 @@ type Props = {
   params: string;
   stdout: string;
   stderr: string;
+  output_type: string;
 };
 
-export default function Output({ testcases, params, stdout, stderr }: Props) {
+export default function Output({ testcases, params, stdout, stderr, output_type }: Props) {
   const [selected, setSelected] = useState<number>(0);
 
   if (stderr)
@@ -30,11 +31,7 @@ export default function Output({ testcases, params, stdout, stderr }: Props) {
   const output = JSON.parse(stdout.trim());
 
   const compareArrays = (expected: any[], actual: any[]): boolean => {
-    return (
-      actual &&
-      expected.length === actual.length &&
-      expected.every((value, index) => value === actual[index])
-    );
+    return JSON.stringify(expected) === JSON.stringify(actual);
   }
 
   const isTestCaseValid = (expected: number[], output: number[], type: string): boolean => {
@@ -42,7 +39,7 @@ export default function Output({ testcases, params, stdout, stderr }: Props) {
       case 'array':
         return compareArrays(expected, output);
       default:
-        return false;
+        return compareArrays(expected, output);;
     }
   };
 
@@ -63,7 +60,7 @@ export default function Output({ testcases, params, stdout, stderr }: Props) {
             })}
           >
             <ul
-              className={`list-inside list-disc ${isTestCaseValid(output[i].expected, output[i].output, 'array') ? 'marker:text-green-600' : 'marker:text-red-600'}`}
+              className={`list-inside list-disc ${isTestCaseValid(output[i].expected, output[i].output, output_type) ? 'marker:text-green-600' : 'marker:text-red-600'}`}
             >
               <li>Case {i + 1}</li>
             </ul>

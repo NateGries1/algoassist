@@ -4,7 +4,6 @@ export async function POST(req: NextRequest) {
   const ENDPOINT = 'https://emkc.org/api/v2/piston/execute';
 
   const { language, code, problem_name, testcases, problem } = await req.json();
-  console.log('PROBLEM:', problem);
 
   if (!language || !code || !problem_name || !testcases) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -43,7 +42,6 @@ export async function POST(req: NextRequest) {
     });
 
     const data = await response.json();
-    console.log('DATA:', data);
 
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
@@ -85,7 +83,6 @@ function generateRunnableCode(
   let template = '';
 
   const isLinkedList = params_list?.includes('linked list');
-  console.log(problem_name, language, testcases, params_list);
 
   switch (language) {
     case 'python':

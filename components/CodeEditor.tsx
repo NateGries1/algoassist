@@ -93,7 +93,6 @@ export default function CodeEditor({
       });
 
       const data = await response.json();
-      console.log("runCode", data);
 
       setExecutionResult(data);
       setRunLoading(false);

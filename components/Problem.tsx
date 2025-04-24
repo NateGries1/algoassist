@@ -162,6 +162,7 @@ export default function Problem({ result }: Props) {
                     <Output
                       testcases={result.testcases}
                       params={result.params}
+                      output_type = {result.output_type}
                       stdout={executionResult.run.stdout}
                       stderr={executionResult.run.stderr}
                     />

@@ -40,7 +40,7 @@ export default function Page({ params }: { params: { slug: string } }) {
   const [overallProgress, setOverallProgress] = useState(0); // Progress for the main circular animation
   // State to track the currently open accordion item ID (null if none open)
   const [openAccordionId, setOpenAccordionId] = useState<string | null>(null);
-
+  const [retryCount, setRetryCount] = useState(0);
 
   // Function to call the AI API
   const getResults = async (
@@ -159,45 +159,45 @@ export default function Page({ params }: { params: { slug: string } }) {
 
     fetchEvaluation();
 
-  }, [params.slug]); // Depend on params.slug if it affects the data to fetch
+  }, [params.slug, retryCount] ); // Depend on params.slug if it affects the data to fetch
 
   // Effect to parse the AI response when it's received
   useEffect(() => {
     if (evaluationApiResponse && evaluationApiResponse.aiResponse) {
       const aiResponseText = evaluationApiResponse.aiResponse;
-      // Use a more robust regex to capture content within the json markdown block
       const jsonMatch = aiResponseText.match(/```json\s*([\s\S]*?)\s*```/);
-
+  
       if (jsonMatch && jsonMatch[1]) {
         try {
           const parsed = JSON.parse(jsonMatch[1]);
-          // Validate the parsed structure matches expected types before setting state
           if (parsed && parsed.evaluation && parsed.scores) {
-             setParsedEvaluation(parsed as ParsedEvaluation); // Cast to defined type
-             setParsingError(null); // Clear any previous parsing errors
+            setParsedEvaluation(parsed as ParsedEvaluation);
+            setParsingError(null);
           } else {
-             console.error("Parsed JSON does not match expected structure:", parsed);
-             setParsedEvaluation(null);
-             setParsingError("Parsed evaluation JSON has an unexpected structure.");
+            console.error("Parsed JSON does not match expected structure:", parsed);
+            setParsedEvaluation(null);
+            setParsingError("Parsed evaluation JSON has an unexpected structure.");
+            setRetryCount(prev => prev + 1); // ⬅ Retry!
           }
         } catch (error) {
           console.error("Error parsing JSON from AI response:", error);
-          setParsedEvaluation(null); // Clear parsed data on error
+          setParsedEvaluation(null);
           setParsingError("Failed to parse evaluation JSON from AI response.");
+          setRetryCount(prev => prev + 1); // ⬅ Retry!
         }
       } else {
-          console.warn("No JSON markdown block found in AI response.");
-          setParsedEvaluation(null); // Clear parsed data if block not found
-          setParsingError("Could not find evaluation JSON block in AI response.");
+        console.warn("No JSON markdown block found in AI response.");
+        setParsedEvaluation(null);
+        setParsingError("Could not find evaluation JSON block in AI response.");
+        setRetryCount(prev => prev + 1); // ⬅ Retry!
       }
     } else if (evaluationApiResponse && !evaluationApiResponse.aiResponse) {
-         console.warn("AI response received, but it does not contain 'aiResponse' text.");
-         setParsedEvaluation(null);
-         setParsingError("AI response did not contain the expected evaluation text.");
-         // setLoading(false); // Loading should already be false from the fetch effect
+      console.warn("AI response received, but it does not contain 'aiResponse' text.");
+      setParsedEvaluation(null);
+      setParsingError("AI response did not contain the expected evaluation text.");
     }
-    // This effect depends on evaluationApiResponse changing
   }, [evaluationApiResponse]);
+  
 
 
   // Effect for the main circular progress bar animation (Overall Performance)

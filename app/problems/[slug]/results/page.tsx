@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { AIMessage } from '@/types/aiMessage';
 import { SupportedLanguages } from '@/types/supportedLanguages';
 import Navbar from '@/components/Navbar';
-// No need to import Flowbite's init functions if doing it manually
 
 // Define types for clarity
 interface EvaluationDetails {
@@ -90,6 +89,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     const chatHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]') as AIMessage[];
 
     const fetchEvaluation = async () => {
+      setLoading(true);
       try {
         if (codeValue && problemName) {
           const formattedPrompt = `You are an AI evaluation assistant. Please analyze this completed coding interview:
@@ -148,12 +148,6 @@ export default function Page({ params }: { params: { slug: string } }) {
       } catch (error) {
         console.error("Error fetching evaluation:", error);
         setParsingError("Failed to fetch evaluation from API.");
-      } finally {
-        // Only set loading to false if we successfully fetched or encountered an error
-        // where we can't proceed. If codeValue/problemName were missing, it's already set above.
-        if (codeValue && problemName) {
-           setLoading(false);
-        }
       }
     };
 
@@ -166,38 +160,38 @@ export default function Page({ params }: { params: { slug: string } }) {
     if (evaluationApiResponse && evaluationApiResponse.aiResponse) {
       const aiResponseText = evaluationApiResponse.aiResponse;
       const jsonMatch = aiResponseText.match(/```json\s*([\s\S]*?)\s*```/);
-  
+    
       if (jsonMatch && jsonMatch[1]) {
         try {
           const parsed = JSON.parse(jsonMatch[1]);
           if (parsed && parsed.evaluation && parsed.scores) {
             setParsedEvaluation(parsed as ParsedEvaluation);
             setParsingError(null);
+            setLoading(false); // Successfully parsed, stop loading
           } else {
             console.error("Parsed JSON does not match expected structure:", parsed);
-            setParsedEvaluation(null);
-            setParsingError("Parsed evaluation JSON has an unexpected structure.");
-            setRetryCount(prev => prev + 1); // ⬅ Retry!
+            if (!parsedEvaluation) { // Only retry if we don't already have valid data
+              setRetryCount(prev => prev + 1); 
+            } else {
+              console.warn("New data was invalid, keeping previous successful data");
+            }
           }
         } catch (error) {
           console.error("Error parsing JSON from AI response:", error);
-          setParsedEvaluation(null);
-          setParsingError("Failed to parse evaluation JSON from AI response.");
-          setRetryCount(prev => prev + 1); // ⬅ Retry!
+          if (!parsedEvaluation) { 
+            setRetryCount(prev => prev + 1);
+          }
         }
       } else {
         console.warn("No JSON markdown block found in AI response.");
-        setParsedEvaluation(null);
-        setParsingError("Could not find evaluation JSON block in AI response.");
-        setRetryCount(prev => prev + 1); // ⬅ Retry!
+        if (!parsedEvaluation) { 
+          setRetryCount(prev => prev + 1); 
+          
+        }
       }
-    } else if (evaluationApiResponse && !evaluationApiResponse.aiResponse) {
-      console.warn("AI response received, but it does not contain 'aiResponse' text.");
-      setParsedEvaluation(null);
-      setParsingError("AI response did not contain the expected evaluation text.");
     }
   }, [evaluationApiResponse]);
-  
+    
 
 
   // Effect for the main circular progress bar animation (Overall Performance)
@@ -334,6 +328,7 @@ export default function Page({ params }: { params: { slug: string } }) {
        return (
         <>
           <Navbar/>
+          
           <div className="flex justify-center items-center h-screen text-yellow-500 text-xl">
               No evaluation data available or parsing failed.
           </div>

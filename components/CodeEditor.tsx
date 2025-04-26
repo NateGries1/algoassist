@@ -19,7 +19,7 @@ enum SupportedLanguages {
 const snippets = {
   "linked list": {
       "python": [
-          "# Definition for singly-linked list. Modify it as needed.",
+          "# Definition for singly-linked list. You can add to it, but don't modify the existing definition.",
           "class ListNode:",
           "    def __init__(self, val=0, next=None):",
           "        self.val = val",

@@ -1,4 +1,14 @@
-export default function Hero() {
+'use client'
+type MyButtonProps = {
+  targetId: string;
+};
+export default function MyButton({ targetId }: MyButtonProps) {
+    const handleClick = () => {
+    const element = document.getElementById(targetId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
   return(
     <div className="relative isolate px-6 lg:px-8 pb-20 max-h-[90vh]">
       <div
@@ -44,9 +54,9 @@ export default function Hero() {
             >
               Get started
             </a>
-            <a href="#" className="text-sm/6 font-semibold text-gray-200">
+            <button onClick={handleClick} className="text-sm/6 font-semibold text-gray-200">
               Learn more <span aria-hidden="true">→</span>
-            </a>
+            </button>
           </div>
         </div>
       </div>

@@ -100,13 +100,13 @@ export default function Problem({ result }: Props) {
             <div className="flex justify-center space-x-4 pb-5">
               <button
                 onClick={() => setHasStarted(true)}
-                className="bg-purple-500 hover:bg-purple-600 text-white font-semibold px-6 py-2 rounded-lg transition duration-300"
+                className="bg-purple-500 hover:bg-purple-600 text-white text-sm px-6 py-2 rounded-lg transition duration-300"
               >
                 Start Interview
               </button>
               <a
                 href="/problems"
-                className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-6 py-2 rounded-lg transition duration-300"
+                className="bg-gray-500 hover:bg-gray-600 text-white text-sm px-6 py-2 rounded-lg transition duration-300"
               >
                 Cancel
               </a>

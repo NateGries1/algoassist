@@ -43,7 +43,7 @@ export default function Problem({ result }: Props) {
       output: ''
     }
   });
-  const [tabIndex, setTabIndex] = React.useState<number>(0);
+  const [tabIndex, setTabIndex] = React.useState<number>(2);
   const [codeValue, setCodeValue] = useState<string>("");
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguages>(
       SupportedLanguages.python

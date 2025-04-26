@@ -24,6 +24,8 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
     const initialPromptRef = useRef(false); // Using a ref
     const { data: session } = useSession();
     const recognitionRef = useRef<(typeof window.SpeechRecognition | typeof window.webkitSpeechRecognition) | null >(null);
+    const [numMessages, setNumMessages] = useState<number>(0);
+
     const getHint = async (message: string) => {
         setHintLoading(true);
         const payload = {
@@ -132,8 +134,6 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
       };
 
       useEffect(() => {
- 
-
         if (typeof window !== 'undefined') {
             const SpeechRecognition =
                 window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -147,7 +147,7 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
                 recognition.onresult = (event: SpeechRecognitionEvent) => {
                     const text = event.results[0][0].transcript;
 
-                    console.log("Speech recognition captured:", text);
+                    console.log("Speech recognition captured!");
                     setMessage(text);
                     handleSend(text)
                     setRecording(false)
@@ -168,12 +168,10 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
  
             } else {
                 console.warn('Speech Recognition API is not supported in this browser.');
-
             }
  
         }
- 
-    }, [handleSend]);
+    }, []);
    
     const handleSendInput = () => {
         if (message.trim() !== "") {
@@ -183,7 +181,7 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
     };
     
     useEffect(() => {
-        if (chatHistory.length === 0  && !initialPromptRef.current) {
+        if (!initialPromptRef.current) {
             initialPromptRef.current = true;
             getHint(
                 "You are an AI acting as a technical interviewer for a computer science interview. The interviewee has already been given a 'LeetCode'-style problem to solve within a 30-minute time limit. Your role is to evaluate their approach and guide them without directly providing the solution. Follow these guidelines:" +

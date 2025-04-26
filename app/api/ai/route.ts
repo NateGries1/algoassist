@@ -7,17 +7,6 @@ const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 export async function POST(req: NextRequest) {
   const { code, problemName, language, chat, history } = await req.json();
 
-  if (!code) {
-    return NextResponse.json(
-      {
-        message: 'Bad'
-      },
-      {
-        status: 400
-      }
-    );
-  }
-
   try {
     const chatSession = model.startChat({
       history: history, // Use provided history from frontend

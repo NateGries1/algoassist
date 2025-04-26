@@ -162,7 +162,7 @@ export default function CodeEditor({
       <Button
         disabled={runLoading}
         size={'sm'}
-        className="transiiton-all absolute bottom-0 right-0 m-4 bg-purple-600 px-2 py-1 duration-300 ease-in-out hover:cursor-pointer hover:bg-green-700 disabled:bg-neutral-800"
+        className="transiiton-all absolute bottom-0 right-0 m-4 bg-purple-600 px-2 py-1 duration-300 ease-in-out hover:cursor-pointer hover:bg-purple-800 disabled:bg-purple-800"
         onClick={runCode}
       >
         {runLoading ? <LoadingDots /> : 'Run'}

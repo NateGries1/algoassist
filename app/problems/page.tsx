@@ -39,12 +39,9 @@ export default async function Home() {
           <p>Challenge yourself with our collection of coding problems ranging from easy to hard difficulty.</p> 
           <p>Select a problem to start solving.</p>
           </div>
-          <ul role="list" className="mt-20 grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2 ">
+          <ul role="list" className="mt-20 grid gap-x-8 gap-y-8 sm:grid-cols-2 xl:col-span-2 ">
             {result
               .sort((a, b) => a.lc_number - b.lc_number)
-              .filter((a) => {
-                return a.id === 'SNGy8ITD0q2Cmc94bguX';
-              })
               .map((doc) => (
                 <li key={doc.id}>
                   <Link

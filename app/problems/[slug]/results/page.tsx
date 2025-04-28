@@ -135,7 +135,7 @@ export default function Page({ params }: { params: { slug: string } }) {
             formattedPrompt,
             chatHistory
           );
-
+          console.log(result)
           setEvaluationApiResponse(result); // Store the raw API response
 
         } else {

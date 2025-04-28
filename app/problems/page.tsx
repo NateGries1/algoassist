@@ -69,9 +69,9 @@ export default async function Home() {
                       <h3 className="text-base/7 font-semibold tracking-tight text-gray-200 ">
                         {doc.title[0].toUpperCase() + doc.title.slice(1).toLowerCase()}
                       </h3>
-                      <p className={`text-sm/6 font-semibold ${
+                      <p className={`text-sm/6 font-semibold text-left ${
                         doc.difficulty === 'easy' 
-                          ? 'text-green-500' 
+                          ? 'text-green-500 ' 
                           : doc.difficulty === 'medium' 
                             ? 'text-yellow-500' 
                             : 'text-red-500'

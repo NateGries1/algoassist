@@ -1,7 +1,7 @@
 'use client';
 
 import { Problem as ProblemType } from '@/types/problem';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import MdxLayout from './MdxLayout';
 import Testcases from './Testcases';
 import dynamic from 'next/dynamic';
@@ -48,9 +48,15 @@ export default function Problem({ result }: Props) {
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguages>(SupportedLanguages.python);
   const [chatHistory, setChatHistory] = React.useState<AIMessage[]>([]);
   const [messageLog, setMessageLog] = useState<ChatMessage[]>([]);
-  const [timeLeft, setTimeLeft] = useState(20); // 30 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(10); // 30 minutes in seconds
   const [isFinished, setIsFinished] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
+  const [initialPrompt, setInitialPrompt] = useState<number>(0);
+
+  const handleSetInitialPrompt = (newValue:number) => {
+    setInitialPrompt(newValue)
+  };
+
   useEffect(() => {
     if (!hasStarted)
      return;
@@ -77,9 +83,14 @@ export default function Problem({ result }: Props) {
     setChatHistory([])
     setMessageLog([])
     setHasStarted(false)
-    setTabIndex(1)
+    setTabIndex(2)
+    setInitialPrompt(0)
+    setCurrentLanguage(SupportedLanguages.python)
   };
-
+  const handleStart = () => {
+    setHasStarted(true)
+    handleSetInitialPrompt(1)
+  }
   // Handle the results functionality (navigate to home page)
   const handleResults = () => {
     const currentPath = window.location.pathname;
@@ -104,7 +115,7 @@ export default function Problem({ result }: Props) {
             <p className="text-lg text-gray-300">This interview will take {Math.floor(timeLeft / 60)} minutes to complete.</p>
             <div className="flex justify-center space-x-4 pb-5">
               <button
-                onClick={() => setHasStarted(true)}
+                onClick={handleStart}
                 className="bg-purple-500 hover:bg-purple-600 text-white text-sm px-6 py-2 rounded-lg transition duration-300"
               >
                 Start Interview
@@ -150,11 +161,7 @@ export default function Problem({ result }: Props) {
     </div>
   </div>
 </div>
-
       )}
-
-
-      
       {/* Left side: Problem description and testcases/output/chat */}
       <div className="h-screen overflow-hidden">
         <PanelGroup direction="vertical">
@@ -208,6 +215,8 @@ export default function Problem({ result }: Props) {
                       setChatHistory={setChatHistory}
                       messageLog={messageLog}
                       setMessageLog={setMessageLog}
+                      initialPrompt= {initialPrompt}
+                      setInitialPrompt={setInitialPrompt}
                     />
                   </div>
                 ) : tabIndex === 1 && executionResult.language ? (

@@ -105,7 +105,7 @@ export default function CodeEditor({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     setCodeValue(prefix + starterCodes[currentLanguage]);
-  }, [currentLanguage]);
+  }, [currentLanguage, setCodeValue]);
 
   return (
     <div className="relative flex h-full flex-col">

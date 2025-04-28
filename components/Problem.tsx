@@ -48,7 +48,7 @@ export default function Problem({ result }: Props) {
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguages>(SupportedLanguages.python);
   const [chatHistory, setChatHistory] = React.useState<AIMessage[]>([]);
   const [messageLog, setMessageLog] = useState<ChatMessage[]>([]);
-  const [timeLeft, setTimeLeft] = useState(10); // 30 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(50); // 30 minutes in seconds
   const [isFinished, setIsFinished] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [initialPrompt, setInitialPrompt] = useState<number>(0);
@@ -109,7 +109,7 @@ export default function Problem({ result }: Props) {
   return (
     <div className="relative h-screen w-full grid md:grid-cols-2">
       {!hasStarted && (
-        <div className="fixed inset-0 z-50 bg-slate-950 bg-opacity-50 backdrop-blur-sm flex items-center justify-center">
+        <div className="fixed inset-0 z-50 bg-slate-950 bg-opacity-50 backdrop-blur-md flex items-center justify-center">
           <div className="bg-black/50 border border-gray-500 text-white rounded-lg p-8 max-w-xl w-full text-center space-y-6">
             <h2 className="text-4xl font-bold pt-5 px-5">Ready to start your interview? </h2>
             <p className="text-lg text-gray-300">This interview will take {Math.floor(timeLeft / 60)} minutes to complete.</p>
@@ -220,6 +220,7 @@ export default function Problem({ result }: Props) {
                       setMessageLog={setMessageLog}
                       initialPrompt= {initialPrompt}
                       setInitialPrompt={setInitialPrompt}
+                      timeLeft={timeLeft}
                     />
                   </div>
                 ) : tabIndex === 1 && executionResult.language ? (

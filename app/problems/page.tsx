@@ -7,6 +7,7 @@ import Hero from '@/components/Hero';
 import Features from '@/components/Features';
 import Footer from '@/components/Footer';
 import LogoClouds from '@/components/LogoClouds';
+import RandomProblemButton from '@/components/RandomProblemButton';
 export default async function Home() {
   const {
     result,
@@ -83,6 +84,9 @@ export default async function Home() {
                 </li>
               ))}
           </ul>
+
+          <RandomProblemButton problems={result} />
+
         </div>
       </main>
       <Footer/>

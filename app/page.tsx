@@ -25,8 +25,10 @@ export default async function Home() {
       <Navbar/>
       {/* Background gradient behind Hero */}
       <div className="bg-[radial-gradient(circle_500px_at_50%_200px,#3e3e3e,transparent)]">
-        <Hero />
-        <Features/>
+        <Hero targetId="Features"/>
+        <div id='Features'>
+          <Features/>
+        </div>
       </div>
       
       {/* Styled Problem List Section */}

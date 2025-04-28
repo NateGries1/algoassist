@@ -1,7 +1,7 @@
 'use client';
 
 import { Problem as ProblemType } from '@/types/problem';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import MdxLayout from './MdxLayout';
 import Testcases from './Testcases';
 import dynamic from 'next/dynamic';
@@ -45,16 +45,22 @@ export default function Problem({ result }: Props) {
   });
   const [tabIndex, setTabIndex] = React.useState<number>(2);
   const [codeValue, setCodeValue] = useState<string>("");
-  const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguages>(
-      SupportedLanguages.python
-    );
+  const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguages>(SupportedLanguages.python);
   const [chatHistory, setChatHistory] = React.useState<AIMessage[]>([]);
   const [messageLog, setMessageLog] = useState<ChatMessage[]>([]);
-  const [timeLeft, setTimeLeft] = useState(20); // 30 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(60 * 30); // 30 minutes in seconds
   const [isFinished, setIsFinished] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
+  const [initialPrompt, setInitialPrompt] = useState<number>(0);
+
+  const handleSetInitialPrompt = (newValue:number) => {
+    setInitialPrompt(newValue)
+  };
+
   useEffect(() => {
-    if (!hasStarted) return;
+    if (!hasStarted)
+     return;
+
     if (timeLeft <= 0 ){
       setIsFinished(true)
       return;
@@ -71,10 +77,20 @@ export default function Problem({ result }: Props) {
   const seconds = timeLeft % 60;
 
   const handleRestart = () => {
-    setTimeLeft(60); // Reset the timer to 60 seconds (or your desired starting time)
+    setTimeLeft(60 * 30); // Reset the timer to 60 seconds (or your desired starting time)
     setIsFinished(false); // Hide the "interview over" message
+    setCodeValue("")
+    setChatHistory([])
+    setMessageLog([])
+    setHasStarted(false)
+    setTabIndex(2)
+    setInitialPrompt(0)
+    setCurrentLanguage(SupportedLanguages.python)
   };
-
+  const handleStart = () => {
+    setHasStarted(true)
+    handleSetInitialPrompt(1)
+  }
   // Handle the results functionality (navigate to home page)
   const handleResults = () => {
     const currentPath = window.location.pathname;
@@ -93,20 +109,20 @@ export default function Problem({ result }: Props) {
   return (
     <div className="relative h-screen w-full grid md:grid-cols-2">
       {!hasStarted && (
-        <div className="fixed inset-0 z-50 bg-slate-950 bg-opacity-50 backdrop-blur-sm flex items-center justify-center">
+        <div className="fixed inset-0 z-50 bg-slate-950 bg-opacity-50 backdrop-blur-md flex items-center justify-center">
           <div className="bg-black/50 border border-gray-500 text-white rounded-lg p-8 max-w-xl w-full text-center space-y-6">
             <h2 className="text-4xl font-bold pt-5 px-5">Ready to start your interview? </h2>
             <p className="text-lg text-gray-300">This interview will take {Math.floor(timeLeft / 60)} minutes to complete.</p>
             <div className="flex justify-center space-x-4 pb-5">
               <button
-                onClick={() => setHasStarted(true)}
-                className="bg-purple-500 hover:bg-purple-600 text-white font-semibold px-6 py-2 rounded-lg transition duration-300"
+                onClick={handleStart}
+                className="bg-purple-500 hover:bg-purple-600 text-white text-sm px-6 py-2 rounded-lg transition duration-300"
               >
                 Start Interview
               </button>
               <a
                 href="/problems"
-                className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-6 py-2 rounded-lg transition duration-300"
+                className="bg-gray-500 hover:bg-gray-600 text-white text-sm px-6 py-2 rounded-lg transition duration-300"
               >
                 Cancel
               </a>
@@ -145,11 +161,7 @@ export default function Problem({ result }: Props) {
     </div>
   </div>
 </div>
-
       )}
-
-
-      
       {/* Left side: Problem description and testcases/output/chat */}
       <div className="h-screen overflow-hidden">
         <PanelGroup direction="vertical">
@@ -159,8 +171,11 @@ export default function Problem({ result }: Props) {
                 <h1 className="text-3xl font-bold">
                   {result.lc_number}: {result.title[0].toUpperCase() + result.title.slice(1).toLowerCase()}
                 </h1>
+                <div className='space-x-5'>
                 <a href="/" className="text-white bg-purple-500 font-semibold px-3 py-2 rounded-lg">Home</a>
-              </div>
+                <button onClick={() =>setIsFinished(true)} className="text-white bg-red-500 font-semibold px-3 py-2 rounded-lg">End Interview</button>
+                </div>
+               </div>
               <p className="text-2xl mt-4">
                 {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
               </p>
@@ -203,6 +218,9 @@ export default function Problem({ result }: Props) {
                       setChatHistory={setChatHistory}
                       messageLog={messageLog}
                       setMessageLog={setMessageLog}
+                      initialPrompt= {initialPrompt}
+                      setInitialPrompt={setInitialPrompt}
+                      timeLeft={timeLeft}
                     />
                   </div>
                 ) : tabIndex === 1 && executionResult.language ? (
@@ -235,6 +253,7 @@ export default function Problem({ result }: Props) {
           setTabIndex={setTabIndex}
           codeValue={codeValue}
           setCodeValue={setCodeValue}
+          hasStarted={hasStarted}
         />
       </div>
     </div>

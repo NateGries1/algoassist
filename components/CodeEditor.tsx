@@ -42,6 +42,7 @@ type Props = {
   setTabIndex: React.Dispatch<React.SetStateAction<number>>;
   codeValue: string;
   setCodeValue: React.Dispatch<React.SetStateAction<string>>;
+  hasStarted: boolean;
 };
 
 export default function CodeEditor({
@@ -52,7 +53,8 @@ export default function CodeEditor({
   setCurrentLanguage,
   setTabIndex,
   codeValue,
-  setCodeValue
+  setCodeValue,
+  hasStarted
 }: Props) {
   const functionName = problem.function;
   const params = problem.params;
@@ -104,8 +106,11 @@ export default function CodeEditor({
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    setCodeValue(prefix + starterCodes[currentLanguage]);
-  }, [currentLanguage]);
+    console.log(hasStarted)
+    if(hasStarted){
+      setCodeValue(prefix + starterCodes[currentLanguage]);
+    }
+  }, [currentLanguage, setCodeValue, hasStarted]);
 
   return (
     <div className="relative flex h-full flex-col">

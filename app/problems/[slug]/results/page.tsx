@@ -135,7 +135,7 @@ export default function Page({ params }: { params: { slug: string } }) {
             formattedPrompt,
             chatHistory
           );
-
+          console.log(result)
           setEvaluationApiResponse(result); // Store the raw API response
 
         } else {
@@ -355,9 +355,11 @@ export default function Page({ params }: { params: { slug: string } }) {
     <Navbar/>
 
     <section className="relative isolate bg-slate-950 px-6 py-24 sm:py-32 lg:px-8">
-    <div className="absolute inset-0 -z-10 bg-[radial-gradient(45rem_50rem_at_top,var(--color-purple-900),theme(colors.slate.950))] opacity-20" />
-    <div className="absolute inset-y-0 right-1/2 -z-10 mr-16 w-[200%] origin-bottom-left skew-x-[-30deg] bg-slate-950 shadow-xl ring-1 shadow-purple-600/90 ring-indigo-50 sm:mr-28 lg:mr-0 xl:mr-16 xl:origin-center" />
-    <div className="mx-auto max-w-2xl lg:max-w-4xl">
+      <div className="absolute inset-0 overflow-hidden -z-10">
+        <div className="absolute inset-0 bg-[radial-gradient(45rem_50rem_at_top,var(--color-purple-900),theme(colors.slate.950))] opacity-20" />
+        <div className="absolute inset-y-0 right-1/2 mr-16 w-[200%] origin-bottom-left skew-x-[-30deg] bg-slate-950 shadow-xl ring-1 shadow-purple-600/90 ring-indigo-50 sm:mr-28 lg:mr-0 xl:mr-16 xl:origin-center" />
+      </div>
+      <div className="mx-auto max-w-2xl lg:max-w-4xl">
         <div className="text-center text-white text-6xl mb-10 font-bold">
             RESULTS
         </div>
@@ -603,6 +605,22 @@ export default function Page({ params }: { params: { slug: string } }) {
 
                             {/* Final Grade (no bar needed here) */}
                             <p className='text-3xl'><strong>Final Grade:</strong> {scores.Final_Grade}</p>
+
+                        </div>
+                        <div className="flex justify-center space-x-4 pb-5">
+                        <a
+                          href="/problems"
+                          className="bg-purple-500 hover:bg-purple-600 text-white text-base px-6 py-2 rounded-lg transition duration-300"
+                        >
+                          Back to Problems
+                        </a>
+                        <a
+                          href="/"
+                          className="bg-gray-500 hover:bg-gray-600 text-white text-base px-6 py-2 rounded-lg transition duration-300"
+                        >
+                          Exit
+                        </a>
+                        
                         </div>
                     </div>
                 </div>

@@ -45,16 +45,16 @@ export default function Problem({ result }: Props) {
   });
   const [tabIndex, setTabIndex] = React.useState<number>(2);
   const [codeValue, setCodeValue] = useState<string>("");
-  const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguages>(
-      SupportedLanguages.python
-    );
+  const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguages>(SupportedLanguages.python);
   const [chatHistory, setChatHistory] = React.useState<AIMessage[]>([]);
   const [messageLog, setMessageLog] = useState<ChatMessage[]>([]);
   const [timeLeft, setTimeLeft] = useState(20); // 30 minutes in seconds
   const [isFinished, setIsFinished] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   useEffect(() => {
-    if (!hasStarted) return;
+    if (!hasStarted)
+     return;
+
     if (timeLeft <= 0 ){
       setIsFinished(true)
       return;
@@ -73,6 +73,11 @@ export default function Problem({ result }: Props) {
   const handleRestart = () => {
     setTimeLeft(60); // Reset the timer to 60 seconds (or your desired starting time)
     setIsFinished(false); // Hide the "interview over" message
+    setCodeValue("")
+    setChatHistory([])
+    setMessageLog([])
+    setHasStarted(false)
+    setTabIndex(1)
   };
 
   // Handle the results functionality (navigate to home page)

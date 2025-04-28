@@ -24,7 +24,6 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
     const initialPromptRef = useRef(false); // Using a ref
     const { data: session } = useSession();
     const recognitionRef = useRef<(typeof window.SpeechRecognition | typeof window.webkitSpeechRecognition) | null >(null);
-    const [numMessages, setNumMessages] = useState<number>(0);
 
     const getHint = async (message: string) => {
         setHintLoading(true);
@@ -101,28 +100,6 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
         getHint(message);
         setMessage('');
       }, [getHint]);
-
-      useEffect(() => {
-        if (typeof window !== 'undefined') {
-          const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      
-          if (SpeechRecognition) {
-            const recognition = new SpeechRecognition();
-            recognition.lang = 'en-US';
-            recognition.interimResults = false;
-            recognition.continuous = false;
-      
-            recognition.onresult = (event: SpeechRecognitionEvent) => {
-              const text = event.results[0][0].transcript;
-              setMessage(text);
-            };
-      
-            recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-              console.error('Error:', event.error);
-            };
-          }
-        }
-      }, []); 
       
     const startRecognition = () => {
         if (recognitionRef.current && !recording) {

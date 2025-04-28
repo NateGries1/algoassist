@@ -188,7 +188,6 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
 
                     console.log("Speech recognition captured!");
                     setMessage(text);
-                    handleSend(text)
                     setRecording(false)
 
                 };

@@ -171,8 +171,11 @@ export default function Problem({ result }: Props) {
                 <h1 className="text-3xl font-bold">
                   {result.lc_number}: {result.title[0].toUpperCase() + result.title.slice(1).toLowerCase()}
                 </h1>
+                <div className='space-x-5'>
                 <a href="/" className="text-white bg-purple-500 font-semibold px-3 py-2 rounded-lg">Home</a>
-              </div>
+                <button onClick={() =>setIsFinished(true)} className="text-white bg-red-500 font-semibold px-3 py-2 rounded-lg">End Interview</button>
+                </div>
+               </div>
               <p className="text-2xl mt-4">
                 {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
               </p>
@@ -249,6 +252,7 @@ export default function Problem({ result }: Props) {
           setTabIndex={setTabIndex}
           codeValue={codeValue}
           setCodeValue={setCodeValue}
+          hasStarted={hasStarted}
         />
       </div>
     </div>

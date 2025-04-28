@@ -48,7 +48,7 @@ export default function Problem({ result }: Props) {
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguages>(SupportedLanguages.python);
   const [chatHistory, setChatHistory] = React.useState<AIMessage[]>([]);
   const [messageLog, setMessageLog] = useState<ChatMessage[]>([]);
-  const [timeLeft, setTimeLeft] = useState(50); // 30 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(60 * 30); // 30 minutes in seconds
   const [isFinished, setIsFinished] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [initialPrompt, setInitialPrompt] = useState<number>(0);
@@ -77,7 +77,7 @@ export default function Problem({ result }: Props) {
   const seconds = timeLeft % 60;
 
   const handleRestart = () => {
-    setTimeLeft(60); // Reset the timer to 60 seconds (or your desired starting time)
+    setTimeLeft(60 * 30); // Reset the timer to 60 seconds (or your desired starting time)
     setIsFinished(false); // Hide the "interview over" message
     setCodeValue("")
     setChatHistory([])

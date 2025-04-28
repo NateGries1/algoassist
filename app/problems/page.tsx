@@ -23,13 +23,13 @@ export default async function Home() {
   
   return (
     <>
-    <div className="w-full bg-slate-950 absolute inset-0 -z-10 overflow-hidden">
+    <div className="fixed inset-0 w-full min-h-screen bg-slate-950 -z-10 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(60rem_60rem_at_center,#6d28d9_0%,#0f172a_100%)] opacity-30" />
         <div className="absolute top-1/2 left-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-tr from-purple-500 via-fuchsia-500 to-indigo-500 blur-[120px] opacity-25 animate-pulse" />
     </div>
     <div>
       <Navbar/>
-      <main className="grid h-screen place-items-center px-6 py-24 sm:py-32 lg:px-8 z-10">
+      <main className="grid place-items-center px-6 py-24 sm:py-32 lg:px-8 z-10">
 
         <div className="text-center">
           <p className="text-base font-semibold text-purple-600">Start Learning</p>
@@ -83,6 +83,7 @@ export default async function Home() {
                   </Link>
                 </li>
               ))}
+              
           </ul>
 
           <RandomProblemButton problems={result} />

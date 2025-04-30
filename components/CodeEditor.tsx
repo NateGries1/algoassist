@@ -114,7 +114,7 @@ export default function CodeEditor({
 
   return (
     <div className="relative flex h-full flex-col">
-      <div className="flex w-full justify-between bg-neutral-900">
+      <div className="flex w-full justify-between bg-neutral-800">
         <select
           id="language_selector"
           className="rounded border border-transparent bg-transparent px-2 text-xs shadow-xl hover:cursor-pointer hover:bg-neutral-700 focus:outline-none"
@@ -167,7 +167,7 @@ export default function CodeEditor({
       <Button
         disabled={runLoading}
         size={'sm'}
-        className="transiiton-all absolute bottom-0 right-0 m-4 bg-purple-600 px-2 py-1 duration-300 ease-in-out hover:cursor-pointer hover:bg-purple-800 disabled:bg-purple-800"
+        className="transiiton-all fixed bottom-0 right-0 m-4 bg-purple-600 px-2 py-1 duration-300 ease-in-out hover:cursor-pointer hover:bg-purple-800 disabled:bg-purple-800"
         onClick={runCode}
       >
         {runLoading ? <LoadingDots /> : 'Run'}

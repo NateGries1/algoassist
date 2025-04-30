@@ -133,129 +133,139 @@ export default function Problem({ result }: Props) {
 
       {isFinished && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm bg-opacity-75 flex flex-col justify-center items-center z-50 p-8">
-  {/* Main message */}
-  <div className="bg-black/50 border border-gray-500 rounded-md p-10 flex flex-col justify-center items-center w-full max-w-xl">
-    <h2 className="text-white text-4xl font-semibold mb-4 text-center">
-      Your interview session has concluded.
-    </h2>
+          {/* Main message */}
+          <div className="bg-black/50 border border-gray-500 rounded-md p-10 flex flex-col justify-center items-center w-full max-w-xl">
+            <h2 className="text-white text-4xl font-semibold mb-4 text-center">
+              Your interview session has concluded.
+            </h2>
 
-    {/* Subheading with encouragement */}
-    <p className="text-gray-300 mb-6 text-lg max-w-lg text-center">
-      You have completed the interview—great job! Now, take a moment to review your performance and see where you can improve.
-    </p>
+            {/* Subheading with encouragement */}
+            <p className="text-gray-300 mb-6 text-lg max-w-lg text-center">
+              You have completed the interview—great job! Now, take a moment to review your performance and see where you can improve.
+            </p>
 
-    {/* Buttons for next actions */}
-    <div className="flex space-x-6 mb-6">
-      <button
-        onClick={handleResults}
-        className="bg-purple-500 text-sm text-white px-8 py-3 rounded-lg hover:bg-purple-600 transition duration-300 ease-in-out"
-      >
-        View Results
-      </button>
-      <button
-        onClick={handleRestart}
-        className="bg-gray-600 text-sm text-white px-8 py-3 rounded-lg hover:bg-gray-700 transition duration-300 ease-in-out"
-      >
-        Start a New Interview
-      </button>
-    </div>
-  </div>
-</div>
+            {/* Buttons for next actions */}
+            <div className="flex space-x-6 mb-6">
+              <button
+                onClick={handleResults}
+                className="bg-purple-500 text-sm text-white px-8 py-3 rounded-lg hover:bg-purple-600 transition duration-300 ease-in-out"
+              >
+                View Results
+              </button>
+              <button
+                onClick={handleRestart}
+                className="bg-gray-600 text-sm text-white px-8 py-3 rounded-lg hover:bg-gray-700 transition duration-300 ease-in-out"
+              >
+                Start a New Interview
+              </button>
+            </div>
+          </div>
+        </div>
       )}
       {/* Left side: Problem description and testcases/output/chat */}
-      <div className="h-screen overflow-hidden">
-        <PanelGroup direction="vertical">
-          <Panel defaultSize={65}>
-            <div className="overflow-y-auto bg-neutral-800 p-4 h-full">
-            <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold">
-                  {result.lc_number}: {result.title[0].toUpperCase() + result.title.slice(1).toLowerCase()}
-                </h1>
-                <div className='space-x-5'>
-                <a href="/" className="text-white bg-purple-500 font-semibold px-3 py-2 rounded-lg">Home</a>
-                <button onClick={() =>setIsFinished(true)} className="text-white bg-red-500 font-semibold px-3 py-2 rounded-lg">End Interview</button>
-                </div>
-               </div>
-              <p className="text-2xl mt-4">
-                {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
-              </p>
-              <div
-                className={`w-max rounded-xl bg-neutral-700 px-2 py-1 text-xs
-                ${result.difficulty === 'easy' ? 'text-green-500' : result.difficulty === 'medium' ? 'text-yellow-500' : result.difficulty === 'hard' ? 'text-red-500' : 'text-gray-500'}
-              `}
-              >
-                {result.difficulty[0].toUpperCase() + result.difficulty.slice(1).toLowerCase()}
-              </div>
-              <MdxLayout>{`${result.content.replaceAll('\\n', '\n')}`}</MdxLayout>
+    <div className="w-[100vw]">
+      <PanelGroup direction="horizontal" className="h-screen bg-neutral-900">
+          <Panel defaultSize={45} minSize={1}>
+            <div className="h-screen overflow-hidden min-w-[375px]">
+              <PanelGroup direction="vertical">
+                <Panel defaultSize={65}>
+                  <div className="overflow-y-auto bg-neutral-800 p-4 h-full rounded-lg">
+                    <div className="flex justify-between items-center">
+                      <h1 className="text-3xl font-bold whitespace-nowrap overflow-hidden text-ellipsis">
+                        {result.lc_number}: {result.title[0].toUpperCase() + result.title.slice(1).toLowerCase()}
+                      </h1>
+                      <div className='flex flex-1 flex-wrap justify-end min-w-0 gap-x-2 gap-y-2'>
+                        <a href="/" className="text-white bg-purple-500 font-semibold px-3 py-2 rounded-lg">Home</a>
+                        <button onClick={() =>setIsFinished(true)} className="text-white bg-red-500 font-semibold px-3 py-2 rounded-lg">End Interview</button>
+                      </div>
+                    </div>
+                    <p className="text-2xl mt-4">
+                      {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
+                    </p>
+                    <div
+                      className={`w-max rounded-xl bg-neutral-700 px-2 py-1 text-xs
+                      ${result.difficulty === 'easy' ? 'text-green-500' : result.difficulty === 'medium' ? 'text-yellow-500' : result.difficulty === 'hard' ? 'text-red-500' : 'text-gray-500'}
+                    `}
+                    >
+                      {result.difficulty[0].toUpperCase() + result.difficulty.slice(1).toLowerCase()}
+                    </div>
+                    <MdxLayout>{`${result.content.replaceAll('\\n', '\n')}`}</MdxLayout>
+                  </div>
+                </Panel>
+
+                <PanelResizeHandle className="h-2 bg-neutral-900 hover:bg-neutral-600 cursor-row-resize" />
+
+                <Panel defaultSize={35} className="rounded-lg">
+                  <div className="bg-neutral-800 h-full flex flex-col">
+                    <div className="flex items-center bg-neutral-800 pt-4 px-4 space-x-2">
+                      {Array.from({ length: 3 }).map((_, index) => (
+                        <Button
+                          key={index}
+                          className={`rounded-md px-4 py-2 hover:cursor-pointer hover:bg-neutral-700 ${tabIndex === index ? 'bg-neutral-700' : ''}`}
+                          onClick={() => setTabIndex(index)}
+                        >
+                          {index === 0 ? 'Testcases' : index === 1 ? 'Output' : index === 2 ? 'Chat' : ''}
+                        </Button>
+                      ))}
+                    </div>
+                    <div className="flex-1 overflow-y-auto p-4">
+                      {tabIndex === 0 ? (
+                        <Testcases testcases={result.testcases} params={result.params} />
+                      ) : tabIndex === 2 ? (
+                        <div className="h-full w-full">
+                          <Chat
+                            codeValue={codeValue}
+                            functionName={result.title}
+                            currentLanguage={currentLanguage}
+                            chatHistory={chatHistory}
+                            setChatHistory={setChatHistory}
+                            messageLog={messageLog}
+                            setMessageLog={setMessageLog}
+                            initialPrompt= {initialPrompt}
+                            setInitialPrompt={setInitialPrompt}
+                            timeLeft={timeLeft}
+                          />
+                        </div>
+                      ) : tabIndex === 1 && executionResult.language ? (
+                        <div className="flex h-full w-full flex-col">
+                          <div className="flex items-center"></div>
+                          <Output
+                            testcases={result.testcases}
+                            params={result.params}
+                            output_type = {result.output_type}
+                            stdout={executionResult.run.stdout}
+                            stderr={executionResult.run.stderr}
+                          />
+                        </div>
+                      ) : (
+                        <div>No output yet</div>
+                      )}
+                    </div>
+                  </div>
+                </Panel>
+              </PanelGroup>
             </div>
           </Panel>
 
-          <PanelResizeHandle className="h-2 bg-neutral-900 hover:bg-neutral-600 cursor-row-resize" />
+          <PanelResizeHandle className="w-2 bg-neutral-900 hover:bg-neutral-600 cursor-col-resize" />
 
-          <Panel defaultSize={35}>
-            <div className="bg-neutral-800 h-full flex flex-col">
-              <div className="flex items-center bg-neutral-800 pt-4 px-4 space-x-2">
-                {Array.from({ length: 3 }).map((_, index) => (
-                  <Button
-                    key={index}
-                    className={`rounded-md px-4 py-2 hover:cursor-pointer hover:bg-neutral-700 ${tabIndex === index ? 'bg-neutral-700' : ''}`}
-                    onClick={() => setTabIndex(index)}
-                  >
-                    {index === 0 ? 'Testcases' : index === 1 ? 'Output' : index === 2 ? 'Chat' : ''}
-                  </Button>
-                ))}
-              </div>
-              <div className="flex-1 overflow-y-auto p-4">
-                {tabIndex === 0 ? (
-                  <Testcases testcases={result.testcases} params={result.params} />
-                ) : tabIndex === 2 ? (
-                  <div className="h-full w-full">
-                    <Chat
-                      codeValue={codeValue}
-                      functionName={result.title}
-                      currentLanguage={currentLanguage}
-                      chatHistory={chatHistory}
-                      setChatHistory={setChatHistory}
-                      messageLog={messageLog}
-                      setMessageLog={setMessageLog}
-                      initialPrompt= {initialPrompt}
-                      setInitialPrompt={setInitialPrompt}
-                      timeLeft={timeLeft}
-                    />
-                  </div>
-                ) : tabIndex === 1 && executionResult.language ? (
-                  <div className="flex h-full w-full flex-col">
-                    <div className="flex items-center"></div>
-                    <Output
-                      testcases={result.testcases}
-                      params={result.params}
-                      output_type = {result.output_type}
-                      stdout={executionResult.run.stdout}
-                      stderr={executionResult.run.stderr}
-                    />
-                  </div>
-                ) : (
-                  <div>No output yet</div>
-                )}
-              </div>
+          <Panel defaultSize={55} minSize={1} className="w-full h-screen">
+            {/* Right side: Code editor */}
+            <div className="h-screen w-full rounded-lg">
+              <DyanmicCodeEditor
+                problem={result}
+                setExecutionResult={setExecutionResult}
+                currentLanguage={currentLanguage}
+                setCurrentLanguage={setCurrentLanguage}
+                setTabIndex={setTabIndex}
+                codeValue={codeValue}
+                setCodeValue={setCodeValue}
+                hasStarted={hasStarted}
+              />
             </div>
           </Panel>
-        </PanelGroup>
-      </div>
-
-      {/* Right side: Code editor */}
-      <div className="h-screen">
-        <DyanmicCodeEditor
-          problem={result}
-          setExecutionResult={setExecutionResult}
-          currentLanguage={currentLanguage}
-          setCurrentLanguage={setCurrentLanguage}
-          setTabIndex={setTabIndex}
-          codeValue={codeValue}
-          setCodeValue={setCodeValue}
-          hasStarted={hasStarted}
-        />
-      </div>
+      </PanelGroup>
+    </div>
     </div>
   );
 }

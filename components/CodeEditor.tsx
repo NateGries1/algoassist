@@ -10,21 +10,33 @@ import { AIMessage } from '@/types/aiMessage';
 import { Problem } from '@/types/problem';
 
 enum SupportedLanguages {
-  // cpp = 'cpp',
+  cpp = 'cpp',
   python = 'python'
   // java = 'java',
   // typescript = 'typescript'
 }
 
 const snippets = {
-  "linked list": {
+  "ListNode*": {
       "python": [
-          "# Definition for singly-linked list. You can add to it, but don't modify the existing definition.",
-          "class ListNode:",
-          "    def __init__(self, val=0, next=None):",
-          "        self.val = val",
-          "        self.next = next"
-      ]
+        '# Definition for singly-linked list.',
+        '# You may extend the class, but all test cases use the constructor below.',
+        '',
+        "class ListNode:",
+        "    def __init__(self, val=0, next=None):",
+        "        self.val = val",
+        "        self.next = next"
+      ],
+      "cpp": [
+        '// Definition for singly-linked list.',
+        '// You may extend the class, but all test cases use the constructor below.',
+        '',
+          "struct ListNode {",
+          "    int val;",
+          "    ListNode *next;",
+          "    ListNode(int x) : val(x), next(nullptr) {}",
+          "};"
+      ],
   }
 }
 
@@ -56,19 +68,20 @@ export default function CodeEditor({
   setCodeValue,
   hasStarted
 }: Props) {
+  const outputType = problem.output_type;
   const functionName = problem.function;
   const params = problem.params;
   const testcases = JSON.parse(problem.testcases);
   const param_type = problem.param_type;
 
   let prefix = "";
-  if (param_type.includes("linked list")) {
-    prefix += snippets['linked list'][currentLanguage].join('\n') + "\n\n";
+  if (param_type.includes("ListNode*")) {
+    prefix += snippets['ListNode*'][currentLanguage].join('\n') + "\n\n";
   }
 
   const starterCodes = {
-    cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Hello, C++!" << endl;\n    return 0;\n}',
-    python: `def ${functionName}(${params}):\n    pass`,
+    cpp: `${outputType} ${functionName}(${params}) {\n\t\n}`,
+    python: `def ${functionName}(${params}):\n    `,
     java: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, Java!");\n    }\n}',
     typescript: 'console.log("Hello, TypeScript!");'
   };
@@ -82,7 +95,8 @@ export default function CodeEditor({
       code: codeValue,
       problem_name: functionName,
       testcases: testcases,
-      problem: problem,
+      param_type: problem.param_type,
+      output_type: problem.output_type
     };
 
     try {
@@ -106,7 +120,6 @@ export default function CodeEditor({
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    console.log(hasStarted)
     if(hasStarted){
       setCodeValue(prefix + starterCodes[currentLanguage]);
     }

@@ -17,11 +17,11 @@ import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import Navbar from './Navbar';
 
 enum SupportedLanguages {
-  // cpp = 'cpp',
+  cpp = 'cpp',
   python = 'python'
   // java = 'java',
   // typescript = 'typescript'
-}
+};
 
 type Props = {
   result: ProblemType;
@@ -65,7 +65,6 @@ export default function Problem({ result }: Props) {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-  console.log("isMobile", isMobile);
 
 
   useEffect(() => {
@@ -181,6 +180,13 @@ export default function Problem({ result }: Props) {
             <h1 className="text-2xl font-bold mb-4 text-white">
               {result.lc_number}: {result.title[0].toUpperCase() + result.title.slice(1).toLowerCase()}
             </h1>
+            <div className='flex flex-1 flex-wrap justify-end min-w-0 gap-x-2 gap-y-2'>
+            <p className="text-2xl mt-4">
+              {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
+            </p>
+              <a href="/" className="text-white bg-purple-500 font-semibold px-3 py-2 rounded-lg">Home</a>
+              <button onClick={() =>setIsFinished(true)} className="text-white bg-red-500 font-semibold px-3 py-2 rounded-lg">End Interview</button>
+            </div>
             <MdxLayout>{`${result.content.replaceAll('\\n', '\n')}`}</MdxLayout>
           </div>
 
@@ -224,7 +230,7 @@ export default function Problem({ result }: Props) {
           </div>
 
           {/* Code Editor */}
-          <div className="flex-grow bg-black min-h-[70vh]">
+          <div className="flex-grow bg-neutral-800 min-h-[70vh]">
             <DyanmicCodeEditor
               problem={result}
               setExecutionResult={setExecutionResult}
@@ -307,9 +313,9 @@ export default function Problem({ result }: Props) {
                             <Output
                               testcases={result.testcases}
                               params={result.params}
-                              output_type = {result.output_type}
                               stdout={executionResult.run.stdout}
                               stderr={executionResult.run.stderr}
+                              output_type = {result.output_type}
                             />
                           </div>
                         ) : (

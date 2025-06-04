@@ -139,7 +139,6 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
         }
       };
       useEffect(() => {
-        console.log("Timer value:", timeLeft);
         const endingMessage = "The interview time is almost up. Please provide any final thoughts or questions you have before we conclude.";
 
         // Check if timer is 30 seconds or less AND the message hasn't been sent yet

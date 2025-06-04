@@ -23,7 +23,7 @@ export default function Output({ testcases, params, stdout, stderr, output_type 
 
   const result: {
     in: any[];
-    out: number[];
+    out: any;
   }[] = JSON.parse(testcases);
 
   if (!testcases) return null;
@@ -35,12 +35,8 @@ export default function Output({ testcases, params, stdout, stderr, output_type 
   }
 
   const isTestCaseValid = (expected: number[], output: number[], type: string): boolean => {
-    switch (type) {
-      case 'array':
-        return compareArrays(expected, output);
-      default:
-        return compareArrays(expected, output);;
-    }
+    console.log('Comparing:', "Expected:", expected, "Output:", output, type);
+    return compareArrays(expected, output);
   };
 
   return (
@@ -57,7 +53,7 @@ export default function Output({ testcases, params, stdout, stderr, output_type 
             })}
           >
             <ul
-              className={`list-inside list-disc ${isTestCaseValid(output[i].expected, output[i].output, output_type) ? 'marker:text-green-600' : 'marker:text-red-600'}`}
+              className={`list-inside list-disc ${isTestCaseValid(result[i].out, output[i].output, output_type) ? 'marker:text-green-600' : 'marker:text-red-600'}`}
             >
               <li>Case {i + 1}</li>
             </ul>

@@ -15,19 +15,19 @@ const Navbar = (props: Props) => {
   const { data: session } = useSession();
 
   return (
-    <nav className="fixed z-10 w-full">
-      <div className="mx-auto flex h-[60px] w-full items-center justify-between p-10">
+    <nav className="absolute z-10 w-full">
+      <div className="flex h-[60px] w-full items-center justify-between p-10">
         <div className="flex items-center gap-4">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="sr-only">LCPilot</span>
-          <Image
-            src="/algoassist-logo.png"
-            alt="LCPilot Logo"
-            width={256}
-            height={256}
-            className="h-8 w-8 text-purple-500"
-          />
-        </Link>
+          <Link href="/" className="flex items-center gap-2">
+            <span className="sr-only">AlgoAssist</span>
+            <Image
+              src="/algoassist-logo.png"
+              alt="AlgoAssist Logo"
+              width={256}
+              height={256}
+              className="h-12 w-12 text-purple-500"
+            />
+          </Link>
         </div>
         <div className="relative flex items-center">
           {session ? (

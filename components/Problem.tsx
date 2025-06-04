@@ -116,7 +116,11 @@ export default function Problem({ result }: Props) {
 
     }
   }, [isFinished]);
-  return (
+  return (  
+    <>
+    <div className="absolute right-0 w-[170px]">
+      <Navbar/>
+    </div>
     <div className="relative h-screen w-full grid md:grid-cols-2">
       {!hasStarted && (
         <div className="fixed inset-0 z-50 bg-slate-950 bg-opacity-50 backdrop-blur-md flex items-center justify-center">
@@ -349,5 +353,6 @@ export default function Problem({ result }: Props) {
         </div>
       )}
     </div>
+    </>
   );
 }

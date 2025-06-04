@@ -16,6 +16,11 @@ enum SupportedLanguages {
   // typescript = 'typescript'
 }
 
+const languageLabels: Record<SupportedLanguages, string> = {
+  [SupportedLanguages.cpp]: 'C++',
+  [SupportedLanguages.python]: 'Python'
+};
+
 const snippets = {
   "ListNode*": {
       "python": [
@@ -136,7 +141,7 @@ export default function CodeEditor({
         >
           {Object.entries(SupportedLanguages).map(([key, value]) => (
             <option key={key} value={value}>
-              {value[0].toUpperCase() + value.slice(1)}
+              {languageLabels[key as SupportedLanguages]}
             </option>
           ))}
         </select>
@@ -168,7 +173,8 @@ export default function CodeEditor({
         theme="vs-dark"
         options={{
           selectOnLineNumbers: true,
-          tabCompletion: 'on'
+          tabCompletion: 'off',
+          minimap: { enabled: false }
         }}
         onChange={(newValue, e) => {
           setCodeValue(newValue || '');

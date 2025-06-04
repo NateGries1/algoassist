@@ -35,7 +35,6 @@ export default function Output({ testcases, params, stdout, stderr, output_type 
   }
 
   const isTestCaseValid = (expected: number[], output: number[], type: string): boolean => {
-    console.log('Comparing:', "Expected:", expected, "Output:", output, type);
     return compareArrays(expected, output);
   };
 

@@ -16,7 +16,7 @@ export default function OpenProfile({ session }: Props) {
       height={64}
       src={session.user?.image as string}
       alt={session.user?.name as string}
-      className={`h-6 w-6 rounded-full`}
+      className={`h-9 w-9 rounded-full`}
     />
   );
 }

@@ -39,7 +39,7 @@ const snippets = {
           "struct ListNode {",
           "    int val;",
           "    ListNode *next;",
-          "    ListNode(int x) : val(x), next(nullptr) {}",
+          "    ListNode(int x, ListNode* ptr=nullptr) : val(x), next(ptr) {}",
           "};"
       ],
   }
@@ -85,7 +85,7 @@ export default function CodeEditor({
   }
 
   const starterCodes = {
-    cpp: `${outputType} ${functionName}(${params}) {\n\t\n}`,
+    cpp: `${outputType} ${functionName}(${params.split(',').map((name, i) => `${param_type[i]} ${name}`).join(', ')}) {\n    \n}`,
     python: `def ${functionName}(${params}):\n    `,
     java: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, Java!");\n    }\n}',
     typescript: 'console.log("Hello, TypeScript!");'
@@ -100,8 +100,8 @@ export default function CodeEditor({
       code: codeValue,
       problem_name: functionName,
       testcases: testcases,
-      param_type: problem.param_type,
-      output_type: problem.output_type
+      param_type: param_type,
+      output_type: outputType
     };
 
     try {

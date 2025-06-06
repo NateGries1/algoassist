@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { Testcases } from '@/types/testcases';
 
 enum SupportedLanguages {
     cpp = 'cpp',
@@ -26,6 +27,8 @@ export async function POST(req: NextRequest) {
             output_type
         );
 
+        console.log('Generated files:', files);
+
         const response = await fetch(ENDPOINT, {
             method: 'POST',
             headers: {
@@ -45,6 +48,7 @@ export async function POST(req: NextRequest) {
         });
 
         const data = await response.json();
+        console.log(data);
 
         return NextResponse.json(data, { status: 200 });
     } catch (error) {
@@ -73,34 +77,118 @@ const suffix = {
             ''
         ],
         cpp: [
-            'std::vector<int> linkedlist_to_vector(ListNode* head) {',
-            '    std::vector<int> result;',
+            'string ListNodeToString(ListNode* head) {',
+            '    if (!head) return "[]";',
+            '    string result = "[";',
             '    while (head) {',
-            '        result.push_back(head->val);',
+            '        result += to_string(head->val);',
             '        head = head->next;',
+            '        if (head) result += ", ";',
             '    }',
+            '    result += "]";',
             '    return result;',
-            '}',
-            '',
-            'ListNode* vector_to_linkedlist(const std::vector<int>& vec) {',
-            '    if (vec.empty()) return nullptr;',
-            '    ListNode* head = new ListNode(vec[0]);',
-            '    ListNode* current = head;',
-            '    for (size_t i = 1; i < vec.size(); ++i) {',
-            '        current->next = new ListNode(vec[i]);',
-            '        current = current->next;',
-            '    }',
-            '    return head;',
             '}'
         ]
     }
 };
 
+const vectorHelper: string[] = [
+    'string vectorToString(const vector<int>& vec) {',
+    '    if (vec.empty()) return "[]";',
+    '    string result = "[";',
+    '    for (size_t i = 0; i < vec.size(); ++i) {',
+    '        result += to_string(vec[i]);',
+    '        if (i < vec.size() - 1) result += ", ";',
+    '    }',
+    '    result += "]";',
+    '    return result;',
+    '}'
+];
+
+function generateCppCode(
+    testcases: Testcases,
+    functionName: string,
+    params_list: string[],
+    output_type: string
+): string[] {
+    console.log('Generating C++ code for function:', functionName);
+    console.log('Parsed testcases');
+    console.log('Result:', testcases);
+    const res: string[] = [];
+    res.push('        string res = "[";');
+    for (let i = 0; i < params_list.length; i++) {
+        const type = params_list[i];
+        const varName = String.fromCharCode(97 + i); // 'a', 'b', 'c', ...
+        let line: string = `        ${type} ${varName};`;
+        res.push(line);
+    }
+    res.push(
+        '        std::ostringstream oss;',
+        '        std::streambuf* original_coutbuf = std::cout.rdbuf();'
+    );
+
+    for (const testcase of testcases) {
+        const input_list = testcase.in;
+        for (let i = 0; i < params_list.length; i++) {
+            const type = params_list[i];
+            const varName = String.fromCharCode(97 + i); // 'a', 'b', 'c', ...
+            let line: string = '        ' + varName + ' = ';
+            switch (type) {
+                case 'ListNode*':
+                    if (!input_list[i] || input_list[i].length === 0) {
+                        line += 'nullptr;';
+                        break;
+                    }
+                    let nodes: string[] = [];
+                    for (let idx = 0; idx < input_list[i].length; idx++) {
+                        nodes.push(`new ListNode(${input_list[i][idx]}`);
+                    }
+                    line += nodes.join(',') + ')'.repeat(nodes.length) + ';';
+                    break;
+                case 'int':
+                    line += input_list[i].toString() + ';';
+                    break;
+                case 'vector<int>':
+                    line += 'vector<int>{' + input_list[i].join(', ') + '};';
+                    break;
+            }
+            res.push(line);
+        }
+        console.log('Generated lines:', res);
+        res.push(
+            '        oss.str("");',
+            '        oss.clear();',
+            '        std::cout.rdbuf(oss.rdbuf());',
+            '        try {'
+        );
+        res.push(
+            `            ${output_type} output = ${functionName}(${params_list.map((_, i) => String.fromCharCode(97 + i)).join(', ')});`,
+            output_type === 'ListNode*'
+                ? '            string output_json = ListNodeToString(output);'
+                : output_type === 'vector<int>'
+                  ? '            string output_json = vectorToString(output);'
+                  : `            string output_json = to_string(output);`,
+            `            res += "{\\"output\\": " + output_json + ", \\"stdout\\": \\"" + oss.str() + "\\"},";`,
+            '            std::cout.rdbuf(original_coutbuf);'
+        );
+        res.push(
+            '        } catch (const std::exception& e) {',
+            '            std::cout.rdbuf(original_coutbuf);',
+            '            std::cerr << "Error: " << e.what() << std::endl;',
+            '            return 1;',
+            '        }'
+        );
+    }
+
+    console.log('Generate code:', res);
+    return res;
+}
+
 async function generateRunnableCode(
     problem_name: string,
     language: SupportedLanguages,
     code: string,
-    testcases: string,
+    testcases: Testcases,
     params_list: string[],
     output_type: string
 ) {
@@ -169,76 +257,28 @@ async function generateRunnableCode(
             ];
             break;
         case SupportedLanguages.cpp:
-            const res = await fetch(
-                'https://raw.githubusercontent.com/nlohmann/json/develop/single_include/nlohmann/json.hpp'
-            );
-            const jsonHeader = await res.text();
             version = '10.2.0';
+            console.log('TestCases:', JSON.stringify(testcases));
+            console.log('Params:', JSON.stringify(params_list));
+            const helperCode = generateCppCode(testcases, problem_name, params_list, output_type);
+
             files = [
                 {
                     name: 'src',
                     content: [
-                        '#include <iostream>',
-                        '#include <vector>',
-                        '#include <string>',
-                        '#include <sstream>',
-                        '#include "json.hpp"',
+                        '#include <bits/stdc++.h>',
                         'using namespace std;',
-                        'using json = nlohmann::json;',
-                        '',
-                        'struct TestResult {',
-                        '    std::string expected;',
-                        '    std::string output;',
-                        '    std::string stdout;',
-                        '};',
                         code,
+                        ...vectorHelper,
                         ...linkedListHelpers,
-                        '',
                         'int main() {',
-                        '    json testcases = json::parse(R"(' + testcases + ')");',
-                        '    json params = json::parse(R"(' + JSON.stringify(params_list) + ')");',
-                        '    vector<json> results;',
-                        '',
-                        '    for (const auto& testcase : testcases) {',
-                        '        std::vector<std::string> input_data = testcase.at("in").get<std::vector<std::string>>();',
-                        '        std::vector<int> expected = testcase.at("out").get<std::vector<int>>();',
-                        '',
-                        isLinkedList
-                            ? '        for (size_t i = 0; i < params.size(); ++i) {\n' +
-                              '            if (params[i] == "ListNode*") {\n' +
-                              '                // Convert input_data[i] to linked list\n' +
-                              '            }\n' +
-                              '        }\n'
-                            : '',
-                        '',
-                        '        std::ostringstream oss;',
-                        '        std::streambuf* coutbuf = std::cout.rdbuf();',
-                        '        std::cout.rdbuf(oss.rdbuf());',
-                        '        try {',
-                        `            auto result = ${problem_name}(input_data);`,
-                        '            std::cout.rdbuf(coutbuf);',
-                        '            json result_json;',
-                        '            result_json["output"] = result;',
-                        '            result_json["stdout"] = oss.str();',
-                        '            results.push_back(result_json);',
-                        '        } catch (...) {',
-                        '            std::cout.rdbuf(coutbuf);',
-                        '            results.push_back({',
-                        "                {'output', nullptr},",
-                        "                {'stdout', oss.str()}",
-                        '            });',
-                        '        }',
-                        '    }',
-                        '',
-                        '    std::cout << results.dump(4) << std::endl;',
-                        '    std::cout << params.dump(4) << std::endl;',
-                        '    std::cout << testcases.dump(4) << std::endl;',
-                        '}'
+                        ...helperCode,
+                        `    if (res.back() == ',') res.back() = ']';`,
+                        `    std::cout << res;`,
+                        '    return 0;',
+                        '}',
+                        ''
                     ].join('\n')
-                },
-                {
-                    name: 'json.hpp',
-                    content: jsonHeader
                 }
             ];
             break;

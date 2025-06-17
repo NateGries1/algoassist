@@ -8,6 +8,8 @@ import Features from '@/components/Features';
 import Footer from '@/components/Footer';
 import LogoClouds from '@/components/LogoClouds';
 import RandomProblemButton from '@/components/RandomProblemButton';
+import AddProblemButton from '@/components/AddProblemButton';
+
 export default async function Home() {
   const {
     result,
@@ -25,7 +27,7 @@ export default async function Home() {
     <>
     <div className="fixed inset-0 w-full min-h-screen bg-slate-950 -z-10 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(60rem_60rem_at_center,#6d28d9_0%,#0f172a_100%)] opacity-30" />
-        <div className="absolute top-1/2 left-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-tr from-purple-500 via-fuchsia-500 to-indigo-500 blur-[120px] opacity-25 animate-pulse" />
+        <div className="absolute top-1/2 left-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-tr from-purple-500 via-fuchsia-500 to-indigo-500 blur-[120px] opacity-25" />
     </div>
     <div>
       <Navbar/>
@@ -86,7 +88,10 @@ export default async function Home() {
               
           </ul>
 
-          <RandomProblemButton problems={result} />
+          <div className="flex gap-4 justify-center mx-auto">
+            <RandomProblemButton problems={result} />
+            <AddProblemButton />
+          </div>
 
         </div>
       </main>

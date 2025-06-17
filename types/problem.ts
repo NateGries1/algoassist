@@ -1,5 +1,5 @@
 export type Problem = {
-    id: string;
+    id?: string;
     content: string;
     difficulty: string;
     title: string;

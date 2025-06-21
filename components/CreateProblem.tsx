@@ -22,6 +22,7 @@ const typeMappings: Record<string, string> = {
 };
 
 export default function CreateProblem() {
+    const [titleName, setTitleName] = useState<string>('');
     const [functionName, setFunctionName] = useState<string>('');
     const [parameters, setParameters] = useState<string[]>([]);
     const [paramNames, setParamNames] = useState<string[]>([]);
@@ -31,8 +32,15 @@ export default function CreateProblem() {
     const [returnType, setReturnType] = useState<string>('int');
     const [difficulty, setDifficulty] = useState<string>('easy');
 
-    const handleFunctionNameChange = (value: string) => {
-        setFunctionName(value);
+    const handleTitleNameChange = (value: string) => {
+        setTitleName(value);
+        const newFunctionName = value
+            .replace(/[_-]/g, ' ')
+            .trim()
+            .split(' ')
+            .map((w, i) => i === 0 ? w.toLowerCase() : w[0].toUpperCase() + w.slice(1).toLowerCase())
+            .join('');
+        setFunctionName(newFunctionName);
     };
 
     const handleParamChange = (index: number, value: string) => {
@@ -98,7 +106,7 @@ export default function CreateProblem() {
         const problemData: Problem = {
             content: description,
             difficulty: difficulty,
-            title: functionName,
+            title: titleName,
             topic: '',
             lc_number: 0,
             function: functionName,
@@ -106,11 +114,21 @@ export default function CreateProblem() {
             params: paramNames.join(', '),
             param_type: parameters.map((param) => typeMappings[param] || 'int'),
             output_type: typeMappings[returnType],
-            // add other fields like return type or description if needed
         };
-        //addProblem(problemData);
-        const document = await getProblems(problemData.function);
-        console.log("Document:", document);
+        const response = await fetch('/api/db/addProblem', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(problemData)
+        });
+
+        const {data, error} = await response.json();
+        if (data && !error) {
+            console.log("Added problem successfully:", data);
+        }
+        //const document = await getProblems(problemData.function);
+        //console.log("Document:", document);
     };
 
     return (
@@ -130,7 +148,7 @@ export default function CreateProblem() {
                             <input
                                 type="text"
                                 id="title"
-                                onChange={(e) => handleFunctionNameChange(e.target.value)}
+                                onChange={(e) => handleTitleNameChange(e.target.value)}
                                 className="mt-1 block w-full border border-gray-300 bg-neutral-700 rounded-md shadow-sm p-2"
                             />
                             <label htmlFor="returnType" className="block text-sm font-medium">
@@ -204,13 +222,7 @@ export default function CreateProblem() {
                             <h2 className="text-lg font-semibold">Testcases</h2>
                             {testcaseForms.map((testcase, index) => (
                                 <div key={index} className="flex items-center space-x-2 text-white">
-                                    {functionName
-                                    .replace(/[_-]/g, ' ')
-                                    .trim()
-                                    .split(' ')
-                                    .map((w, i) => i === 0 ? w.toLowerCase() : w[0].toUpperCase() + w.slice(1).toLowerCase())
-                                    .join('')
-                                    }
+                                    {functionName}
                                     ( &nbsp;
                                     <div>
                                         <input

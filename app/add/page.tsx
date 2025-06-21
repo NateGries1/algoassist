@@ -13,6 +13,7 @@ export default async function Page() {
     return <CreateProblem />;
   }
 
+
   return (
     <>
     <Navbar/>

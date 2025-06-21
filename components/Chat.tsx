@@ -142,8 +142,6 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
 
         // Check if timer is 30 seconds or less AND the message hasn't been sent yet
         if (timeLeft <= 30 && !interviewEndingMessageSentRef.current) {
-            console.log("Timer hit 30 seconds or less. Sending ending message.");
-
             // Add the user's message to the log immediately
              setMessageLog(prev => [
                 ...prev,
@@ -164,7 +162,6 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
         // This assumes a timerValue significantly larger than 30 indicates a reset.
         // Adjust the threshold (e.g., > 60 or > initial total time) if needed.
         if (timeLeft > 30 && interviewEndingMessageSentRef.current) {
-             console.log("Timer reset, resetting ending message flag.");
              interviewEndingMessageSentRef.current = false;
         }
 
@@ -184,7 +181,6 @@ export default function Chat({ currentLanguage, codeValue, functionName, chatHis
                 recognition.onresult = (event: SpeechRecognitionEvent) => {
                     const text = event.results[0][0].transcript;
 
-                    console.log("Speech recognition captured!");
                     setMessage(text);
                     setRecording(false)
 

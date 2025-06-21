@@ -27,8 +27,6 @@ export async function POST(req: NextRequest) {
             output_type
         );
 
-        console.log('Generated files:', files);
-
         const response = await fetch(ENDPOINT, {
             method: 'POST',
             headers: {
@@ -48,7 +46,6 @@ export async function POST(req: NextRequest) {
         });
 
         const data = await response.json();
-        console.log(data);
 
         return NextResponse.json(data, { status: 200 });
     } catch (error) {
@@ -111,9 +108,6 @@ function generateCppCode(
     params_list: string[],
     output_type: string
 ): string[] {
-    console.log('Generating C++ code for function:', functionName);
-    console.log('Parsed testcases');
-    console.log('Result:', testcases);
     const res: string[] = [];
     res.push('        string res = "[";');
     for (let i = 0; i < params_list.length; i++) {
@@ -154,7 +148,7 @@ function generateCppCode(
             }
             res.push(line);
         }
-        console.log('Generated lines:', res);
+
         res.push(
             '        oss.str("");',
             '        oss.clear();',
@@ -179,8 +173,6 @@ function generateCppCode(
             '        }'
         );
     }
-
-    console.log('Generate code:', res);
     return res;
 }
 
@@ -258,8 +250,6 @@ async function generateRunnableCode(
             break;
         case SupportedLanguages.cpp:
             version = '10.2.0';
-            console.log('TestCases:', JSON.stringify(testcases));
-            console.log('Params:', JSON.stringify(params_list));
             const helperCode = generateCppCode(testcases, problem_name, params_list, output_type);
 
             files = [

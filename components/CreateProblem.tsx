@@ -7,7 +7,6 @@ import { Problem } from '@/types/problem';
 import { Testcases } from '@/types/testcases';
 import Navbar from './Navbar';
 import getProblems from '@/lib/firebase/getProblem';
-import addProblem from '@/lib/firebase/addProblem';
 
 
 type TestcaseForm = {
@@ -127,8 +126,6 @@ export default function CreateProblem() {
         if (data && !error) {
             console.log("Added problem successfully:", data);
         }
-        //const document = await getProblems(problemData.function);
-        //console.log("Document:", document);
     };
 
     return (

@@ -15,7 +15,5 @@ const firebaseConfig = {
 };
 
 let firebase_app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-console.log('Firebase Config: ');
-console.log(firebaseConfig);
 
 export default firebase_app;

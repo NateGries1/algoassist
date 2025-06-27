@@ -10,7 +10,11 @@ export default async function Page() {
   const session = await getServerSession(authOptions);
 
   if (session?.user?.email) {
-    return <CreateProblem />;
+    return (
+      <div className="font-poppins">
+        <CreateProblem />
+      </div>
+    );
   }
 
 

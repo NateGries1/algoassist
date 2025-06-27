@@ -7,3 +7,30 @@
 .poppins {
     font-family: 'Poppins', sans-serif;
 }
+
+.glass-border {
+    border: 1px solid #d1d5db; /* Tailwind gray-300 */
+    border-radius: 1rem;
+    background: transparent;
+
+    mask-image: linear-gradient(
+        to bottom right,
+        white 0%,
+        white 15%,
+        transparent 80%,
+        transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+        to bottom right,
+        white 0%,
+        white 15%,
+        transparent 80%,
+        transparent 100%
+    );
+
+    mask-mode: alpha;
+    mask-composite: intersect;
+    -webkit-mask-composite: destination-in;
+
+    z-index: 0;
+}

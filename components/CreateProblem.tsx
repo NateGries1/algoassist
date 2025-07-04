@@ -30,8 +30,8 @@ const typeMappings: Record<string, string> = {
 
 const paramMappings: Record<string, string> = {
     'int': 'number',
-    'vector/list': 'array',
-    'linked list': 'array',
+    'list': 'array',
+    'sll': 'array',
     'string': 'string',
 };
 
@@ -225,6 +225,7 @@ export default function CreateProblem() {
             for (const testcase of testcases) {
                 const args = testcase.in;
                 for (let i = 0; i < args.length; ++i) {
+                    console.log(i, parameters[i]);
                     const expectedType = paramMappings[parameters[i]];
                     if (expectedType === 'array') {
                         if (Array.isArray(args[i]) == false) {
@@ -240,9 +241,9 @@ export default function CreateProblem() {
                 }
             }
 
-            // if (hasError) {
-            //     throw new Error('Validation errors occurred. Please fix them before submitting.');
-            // }
+            if (hasError) {
+                throw new Error('Validation errors occurred. Please fix them before submitting.');
+            }
 
             const problemData: Problem = {
                 content: description,

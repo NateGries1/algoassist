@@ -6,10 +6,10 @@ import { Problem } from '@/types/problem';
 
 const db = getFirestore(firebase_app);
 const paramMappings: Record<string, string> = {
-    int: 'number',
-    'vector/list': 'array',
-    'linked list': 'array',
-    string: 'string'
+    'int': 'number',
+    'list': 'array',
+    'sll': 'array',
+    'string': 'string',
 };
 
 const ValidateProblem = (problem: Problem) => {

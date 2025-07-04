@@ -3,13 +3,15 @@ import { getFirestore, collection, doc, setDoc, query, where, getDocs } from 'fi
 import firebase_app from '@/lib/firebase/firebase';
 import getProblem from '@/lib/firebase/getProblem';
 import { Problem } from '@/types/problem';
+import { Testcases } from '@/types/testcases';
 
 const db = getFirestore(firebase_app);
+
 const paramMappings: Record<string, string> = {
-    'int': 'number',
-    'list': 'array',
-    'sll': 'array',
-    'string': 'string',
+    int: 'number',
+    'vector<int>': 'array',
+    'ListNode*': 'array',
+    string: 'string'
 };
 
 const ValidateProblem = (problem: Problem) => {
@@ -108,7 +110,7 @@ const ValidateProblem = (problem: Problem) => {
 
         if (problem.topic.length === 0) return false;
 
-        const testcases = JSON.parse(problem.testcases);
+        const testcases: Testcases = JSON.parse(problem.testcases);
         if (testcases.length < 3) return false;
 
         for (const testcase of testcases) {

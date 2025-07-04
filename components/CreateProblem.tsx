@@ -22,16 +22,10 @@ type TestcaseForm = {
     out: string;
 };
 
-const typeMappings: Record<string, string> = {
-  'int': 'int',
-  'vector/list': 'vector<int>',
-  'linked list': 'ListNode*',
-};
-
 const paramMappings: Record<string, string> = {
     'int': 'number',
-    'list': 'array',
-    'sll': 'array',
+    'vector<int>': 'array',
+    'ListNode*': 'array',
     'string': 'string',
 };
 
@@ -55,7 +49,7 @@ export default function CreateProblem() {
     const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
     const [topicError, setTopicError] = useState<string>('');
 
-    const allTopics = ['Arrays', 'Strings', 'Recursion', 'Trees', 'Graphs'];
+    const allTopics = ['Arrays', 'Strings', 'Recursion', 'Trees', 'Graphs', 'Linked Lists', 'Dynamic Programming', 'Sorting', 'Searching', 'Hashing', 'Greedy Algorithms', 'Backtracking', 'Bit Manipulation', 'Mathematics'];
 
     const handleTitleNameChange = (value: string) => {
         const oldFunctionName = titleName && titleName
@@ -254,8 +248,8 @@ export default function CreateProblem() {
                 function: functionName,
                 testcases: JSON.stringify(testcases),
                 params: paramNames.join(', '),
-                param_type: parameters.map((param) => typeMappings[param] || 'int'),
-                output_type: typeMappings[returnType],
+                param_type: parameters,
+                output_type: returnType,
             };
 
             const response = await fetch('/api/db/addProblem', {

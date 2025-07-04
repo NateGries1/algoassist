@@ -25,8 +25,8 @@ export default function Parameters({ parameters, paramNames, handleParamNameChan
                             className="block w-full border text-[16px] border-gray-300 bg-neutral-700 rounded-full shadow-sm p-0.5 pl-3 pr-0 appearance-none"
                         >
                             <option value="int">int</option>
-                            <option value="list">vector/list</option>
-                            <option value="sll">linked list</option>
+                            <option value="vector<int>">vector/list</option>
+                            <option value="ListNode*">linked list</option>
                         </select>
                         <div className="pointer-events-none absolute top-2 right-3 flex items-center">
                             <svg

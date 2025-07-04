@@ -1,14 +1,14 @@
 const examples: Record<string, string> = {
   'int': '420',
-  'list': '[1, 2, 3]',
-  'sll': '[1, 2, 3]',
+  'vector<int>': '[1, 2, 3]',
+  'ListNode*': '[1, 2, 3]',
   'str': `"hello"`,
 };
 
 const returnPlaceholders: Record<string, string> = {
     'int': '42',
-    'list': '[1, 2, 3]',
-    'sll': '[1, 2, 3]',
+    'vector<int>': '[1, 2, 3]',
+    'ListNode*': '[1, 2, 3]',
     'str': '"hello"',
 };
 

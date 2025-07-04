@@ -5,10 +5,11 @@ type Props = {
     handleSelectTopic: (topic: string) => void;
     handleRemoveTopic: (topic: string) => void;
     allTopics: string[];
+    topicError: string;
 };
 
 
-export default function Topics({ selectedTopics, handleSelectTopic, handleRemoveTopic, allTopics }: Props) {
+export default function Topics({ selectedTopics, handleSelectTopic, handleRemoveTopic, allTopics, topicError }: Props) {
     return (
         <div>
             <label htmlFor="difficulty" className="block font-light">
@@ -49,24 +50,25 @@ export default function Topics({ selectedTopics, handleSelectTopic, handleRemove
                         />
                     </svg>
                 </div>
-                <div className="pt-1 flex flex-wrap gap-2">
-                    {selectedTopics.map((topic) => (
-                    <span
-                        key={topic}
-                        className="flex items-center bg-purple-600 text-white px-2 py-1 rounded-full text-sm"
-                    >
-                        {topic}
-                        <button
-                        type="button"
-                        onClick={() => handleRemoveTopic(topic)}
-                        className="ml-2 text-white hover:text-gray-300"
-                        >
-                        ✕
-                        </button>
-                    </span>
-                    ))}
-                </div>
             </div>
+            <div className="pt-1 flex flex-wrap gap-2">
+                {selectedTopics.map((topic) => (
+                <span
+                    key={topic}
+                    className="flex items-center bg-purple-600 text-white px-2 py-1 rounded-full text-sm"
+                >
+                    {topic}
+                    <button
+                    type="button"
+                    onClick={() => handleRemoveTopic(topic)}
+                    className="ml-2 text-white hover:text-gray-300"
+                    >
+                    ✕
+                    </button>
+                </span>
+                ))}
+            </div>
+            {topicError && <p className="text-red-500 text-[11px]">{topicError}</p>}
         </div>
     );
 }

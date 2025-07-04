@@ -1,14 +1,11 @@
-import Banner from '@/components/Banner';
 import getDocuments from '@/lib/firebase/getDocs';
 import { Problem } from '@/types/problem';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
-import Hero from '@/components/Hero';
-import Features from '@/components/Features';
 import Footer from '@/components/Footer';
-import LogoClouds from '@/components/LogoClouds';
 import RandomProblemButton from '@/components/RandomProblemButton';
 import AddProblemButton from '@/components/AddProblemButton';
+import { useSearchParams } from 'next/navigation';
 
 export default async function Home() {
   const {
@@ -38,7 +35,7 @@ export default async function Home() {
           <h1 className="mt-4 text-5xl font-semibold tracking-tight text-balance text-white sm:text-7xl">
           Coding Problems
           </h1>
-          <div className="mt-6 text-lg font-medium text-pretty text-gray-400 sm:text-xl/8 text-balance">
+          <div className="mt-6 text-lg font-medium text-gray-400 sm:text-xl/8 text-balance">
           <p>Challenge yourself with our collection of coding problems ranging from easy to hard difficulty.</p> 
           <p>Select a problem to start solving.</p>
           </div>
@@ -54,8 +51,8 @@ export default async function Home() {
                     <div className={`flex items-center justify-center size-16 rounded-full ${
                       doc.difficulty === 'easy' 
                         ? 'bg-green-100' 
-                        : doc.difficulty === 'medium' 
-                          ? 'bg-yellow-100' 
+                        : doc.difficulty === 'medium'
+                          ? 'bg-yellow-100'
                           : 'bg-red-100'
                     }`}>
                       <span className={`text-lg font-medium ${
@@ -65,7 +62,7 @@ export default async function Home() {
                             ? 'text-yellow-600' 
                             : 'text-red-600'
                       }`}>
-                        #{doc.lc_number || ''}
+                        #{doc.lc_number}
                       </span>
                     </div>
                     <div >

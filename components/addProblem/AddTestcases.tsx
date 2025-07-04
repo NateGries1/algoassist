@@ -22,6 +22,7 @@ type Props = {
     removeTestcase: (index: number) => void;
     parameters: string[];
     returnType: string;
+    testcaseError: string;
 };
 
 
@@ -35,10 +36,11 @@ export default function AddTestcases({
     addTestcase,
     removeTestcase,
     parameters,
-    returnType
+    returnType,
+    testcaseError
 }: Props) {
     return (
-        <>
+        <div>
             <h2>Testcases (Add at least 3)</h2>
             {testcaseForms.map((testcase, index) => (
                 <div key={index} className="flex flex-col font-light">
@@ -87,8 +89,7 @@ export default function AddTestcases({
                 </div>
             ))}
 
-
-            <div className="flex justify-start mb-2">
+            <div className="flex justify-start">
                 <button
                     type="button"
                     onClick={addTestcase}
@@ -97,6 +98,7 @@ export default function AddTestcases({
                     + Add Testcase
                 </button>
             </div>
-        </>
+            {testcaseError && <p className="text-red-500 text-[11px]">{testcaseError}</p>}
+        </div>
     );
 }

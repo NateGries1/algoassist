@@ -11,15 +11,15 @@ enum SupportedLanguages {
 export async function POST(req: NextRequest) {
     const ENDPOINT = 'https://emkc.org/api/v2/piston/execute';
 
-    const { language, code, problem_name, testcases, param_type, output_type } = await req.json();
+    const { language, code, function_name, testcases, param_type, output_type } = await req.json();
 
-    if (!language || !code || !problem_name || !testcases) {
+    if (!language || !code || !function_name || !testcases) {
         return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     try {
         const [version, files] = await generateRunnableCode(
-            problem_name,
+            function_name,
             language,
             code,
             testcases,
@@ -177,7 +177,7 @@ function generateCppCode(
 }
 
 async function generateRunnableCode(
-    problem_name: string,
+    function_name: string,
     language: SupportedLanguages,
     code: string,
     testcases: Testcases,
@@ -221,7 +221,7 @@ async function generateRunnableCode(
                         '        stdout_backup = sys.stdout',
                         '        sys.stdout = io.StringIO()',
                         '        try:',
-                        `            result = ${problem_name}(*input_data)`,
+                        `            result = ${function_name}(*input_data)`,
                         '            stdout_output = sys.stdout.getvalue().strip()',
                         '        finally:',
                         '            sys.stdout = stdout_backup',
@@ -250,7 +250,7 @@ async function generateRunnableCode(
             break;
         case SupportedLanguages.cpp:
             version = '10.2.0';
-            const helperCode = generateCppCode(testcases, problem_name, params_list, output_type);
+            const helperCode = generateCppCode(testcases, function_name, params_list, output_type);
 
             files = [
                 {

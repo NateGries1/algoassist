@@ -6,7 +6,7 @@ setReturnType: React.Dispatch<React.SetStateAction<string>>;
 
 export default function ReturnType({ setReturnType }: Props) {
     return (
-        <div>
+        <div className="w-[calc(50%-4px)]">
             <label htmlFor="returnType" className="block font-light">
             Return Type
             </label>

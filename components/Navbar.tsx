@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import MemoryIcon from '@mui/icons-material/Memory';
 import { Button, buttonVariants } from './Button';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { Suspense } from 'react';

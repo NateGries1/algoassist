@@ -6,7 +6,7 @@ type Props = {
 
 export default function Difficulty({ setDifficulty }: Props) {
     return (
-        <div>
+        <div className="w-[calc(50%-4px)]">
             <label htmlFor="difficulty" className="block font-light">
             Difficulty
             </label>

@@ -5,10 +5,11 @@ type Props = {
     handleParamChange: (index: number, type: string) => void;
     removeParameter: (index: number) => void;
     addParameter: () => void;
+    paramError: string;
 };
 
 
-export default function Parameters({ parameters, paramNames, handleParamNameChange, handleParamChange, removeParameter, addParameter }: Props) {
+export default function Parameters({ parameters, paramNames, handleParamNameChange, handleParamChange, removeParameter, addParameter, paramError }: Props) {
     return (
         <div>
             <label htmlFor="returnType" className="block font-light">
@@ -62,7 +63,7 @@ export default function Parameters({ parameters, paramNames, handleParamNameChan
                     </button>
                 </div>
             ))}
-            <div className="flex justify-start mb-3">
+            <div className="flex justify-start">
                 <button
                     type="button"
                     onClick={addParameter}
@@ -71,6 +72,7 @@ export default function Parameters({ parameters, paramNames, handleParamNameChan
                     + Add Parameter
                 </button>
             </div>
+            {paramError && <p className="text-red-500 text-[11px]">{paramError}</p>}
         </div>
     );
 }

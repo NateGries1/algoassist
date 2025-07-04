@@ -98,7 +98,7 @@ export default function CodeEditor({
     const payload = {
       language: currentLanguage,
       code: codeValue,
-      problem_name: functionName,
+      function_name: functionName,
       testcases: testcases,
       param_type: param_type,
       output_type: outputType

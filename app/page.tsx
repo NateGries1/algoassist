@@ -1,4 +1,3 @@
-import Banner from '@/components/Banner';
 import getDocuments from '@/lib/firebase/getDocs';
 import { Problem } from '@/types/problem';
 import Link from 'next/link';

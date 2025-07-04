@@ -181,16 +181,16 @@ export default function Problem({ result }: Props) {
         <div className="flex flex-col min-h-screen w-full">
           {/* Problem Section */}
           <div className="p-4 bg-neutral-800">
-            <h1 className="text-2xl font-bold mb-4 text-white">
-              {result.lc_number}: {result.title[0].toUpperCase() + result.title.slice(1).toLowerCase()}
-            </h1>
             <div className='flex flex-1 flex-wrap justify-end min-w-0 gap-x-2 gap-y-2'>
-            <p className="text-2xl mt-4">
-              {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
-            </p>
+              <p className="text-2xl mt-4">
+                {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
+              </p>
               <a href="/" className="text-white bg-purple-500 font-semibold px-3 py-2 rounded-lg">Home</a>
               <button onClick={() =>setIsFinished(true)} className="text-white bg-red-500 font-semibold px-3 py-2 rounded-lg">End Interview</button>
             </div>
+            <h1 className="text-2xl font-bold mb-4 text-white">
+              {result.lc_number}: {result.title[0].toUpperCase() + result.title.slice(1).toLowerCase()}
+            </h1>
             <MdxLayout>{`${result.content.replaceAll('\\n', '\n')}`}</MdxLayout>
           </div>
 
@@ -250,23 +250,23 @@ export default function Problem({ result }: Props) {
       ) : (
         <div className="w-[100vw]">
           <PanelGroup direction='horizontal' className="h-screen bg-neutral-900">
-            <Panel defaultSize={45} minSize={2}>
-              <div className="h-screen overflow-hidden min-w-[375px]">
+            <Panel defaultSize={45} minSize={22}>
+              <div className="h-screen overflow-hidden min-w-[22vw]">
                 <PanelGroup direction="vertical">
-                  <Panel defaultSize={65} minSize={2} className="rounded-lg">
+                  <Panel defaultSize={45} minSize={2} className="rounded-lg">
                     <div className="overflow-y-auto bg-neutral-800 p-4 h-full rounded-lg">
-                      <div className="flex justify-between items-center">
-                        <h1 className="text-3xl font-bold whitespace-nowrap overflow-hidden text-ellipsis">
-                          {result.lc_number}: {result.title[0].toUpperCase() + result.title.slice(1).toLowerCase()}
-                        </h1>
-                        <div className='flex flex-1 flex-wrap justify-end min-w-0 gap-x-2 gap-y-2'>
+                      <div className='flex flex-1 flex-wrap justify-between items-center min-w-0 gap-y-2'>
+                        <div className="space-x-2">
                           <a href="/" className="text-white bg-purple-500 font-semibold px-3 py-2 rounded-lg">Home</a>
                           <button onClick={() =>setIsFinished(true)} className="text-white bg-red-500 font-semibold px-3 py-2 rounded-lg">End Interview</button>
                         </div>
+                        <p className="text-2xl">
+                          {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
+                        </p>
                       </div>
-                      <p className="text-2xl mt-4">
-                        {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
-                      </p>
+                      <h1 className="text-3xl font-bold whitespace-nowrap overflow-hidden text-ellipsis">
+                        {result.lc_number}: {result.title[0].toUpperCase() + result.title.slice(1).toLowerCase()}
+                      </h1>
                       <div
                         className={`w-max rounded-xl bg-neutral-700 px-2 py-1 text-xs
                         ${result.difficulty === 'easy' ? 'text-green-500' : result.difficulty === 'medium' ? 'text-yellow-500' : result.difficulty === 'hard' ? 'text-red-500' : 'text-gray-500'}
@@ -280,7 +280,7 @@ export default function Problem({ result }: Props) {
 
                   <PanelResizeHandle className="h-2 bg-neutral-900 hover:bg-neutral-600 cursor-row-resize" />
 
-                  <Panel defaultSize={35} minSize={2} className="rounded-lg">
+                  <Panel defaultSize={55} minSize={2} className="rounded-lg">
                     <div className="bg-neutral-800 h-full flex flex-col">
                       <div className="flex items-center bg-neutral-800 pt-4 px-4 space-x-2">
                         {Array.from({ length: 3 }).map((_, index) => (

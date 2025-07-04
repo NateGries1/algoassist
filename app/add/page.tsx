@@ -1,20 +1,22 @@
 import getDocument from '@/lib/firebase/getData';
-import ProblemLayout from '@/components/Problem';
+import CreateProblem from '@/components/CreateProblem';
 import { Problem } from '@/types/problem';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import Navbar from '@/components/Navbar';
+import { signIn, signOut, useSession } from 'next-auth/react';
 
-export default async function Page({ params }: { params: { slug: string } }) {
+export default async function Page() {
   const session = await getServerSession(authOptions);
-  const { result, error } = (await getDocument('problem', params.slug)) as {
-    result: Problem;
-    error: string;
-  };
 
-  if (session?.user?.email) { 
-    return <ProblemLayout result={result} />;
+  if (session?.user?.email) {
+    return (
+      <div className="font-poppins">
+        <CreateProblem />
+      </div>
+    );
   }
+
 
   return (
     <>

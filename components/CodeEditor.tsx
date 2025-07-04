@@ -85,7 +85,7 @@ export default function CodeEditor({
   }
 
   const starterCodes = {
-    cpp: `${outputType} ${functionName}(${params.split(',').map((name, i) => `${param_type[i]} ${name}`).join(', ')}) {\n    \n}`,
+    cpp: `${outputType} ${functionName}(${params.split(', ').map((name, i) => `${param_type[i]} ${name}`).join(', ')}) {\n    \n}`,
     python: `def ${functionName}(${params}):\n    `,
     java: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, Java!");\n    }\n}',
     typescript: 'console.log("Hello, TypeScript!");'
@@ -98,7 +98,7 @@ export default function CodeEditor({
     const payload = {
       language: currentLanguage,
       code: codeValue,
-      problem_name: functionName,
+      function_name: functionName,
       testcases: testcases,
       param_type: param_type,
       output_type: outputType
@@ -146,7 +146,7 @@ export default function CodeEditor({
           ))}
         </select>
         <Button
-          className="border border-transparent hover:cursor-pointer hover:bg-neutral-700"
+          className="border border-transparent hover:cursor-pointer hover:bg-neutral-700 z-20"
           type="button"
           title="Reset to default code"
           onClick={() => setCodeValue(prefix + starterCodes[currentLanguage])}

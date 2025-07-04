@@ -11,23 +11,21 @@ enum SupportedLanguages {
 export async function POST(req: NextRequest) {
     const ENDPOINT = 'https://emkc.org/api/v2/piston/execute';
 
-    const { language, code, problem_name, testcases, param_type, output_type } = await req.json();
+    const { language, code, function_name, testcases, param_type, output_type } = await req.json();
 
-    if (!language || !code || !problem_name || !testcases) {
+    if (!language || !code || !function_name || !testcases) {
         return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     try {
         const [version, files] = await generateRunnableCode(
-            problem_name,
+            function_name,
             language,
             code,
             testcases,
             param_type,
             output_type
         );
-
-        console.log('Generated files:', files);
 
         const response = await fetch(ENDPOINT, {
             method: 'POST',
@@ -48,7 +46,6 @@ export async function POST(req: NextRequest) {
         });
 
         const data = await response.json();
-        console.log(data);
 
         return NextResponse.json(data, { status: 200 });
     } catch (error) {
@@ -111,9 +108,6 @@ function generateCppCode(
     params_list: string[],
     output_type: string
 ): string[] {
-    console.log('Generating C++ code for function:', functionName);
-    console.log('Parsed testcases');
-    console.log('Result:', testcases);
     const res: string[] = [];
     res.push('        string res = "[";');
     for (let i = 0; i < params_list.length; i++) {
@@ -154,7 +148,7 @@ function generateCppCode(
             }
             res.push(line);
         }
-        console.log('Generated lines:', res);
+
         res.push(
             '        oss.str("");',
             '        oss.clear();',
@@ -179,13 +173,11 @@ function generateCppCode(
             '        }'
         );
     }
-
-    console.log('Generate code:', res);
     return res;
 }
 
 async function generateRunnableCode(
-    problem_name: string,
+    function_name: string,
     language: SupportedLanguages,
     code: string,
     testcases: Testcases,
@@ -229,7 +221,7 @@ async function generateRunnableCode(
                         '        stdout_backup = sys.stdout',
                         '        sys.stdout = io.StringIO()',
                         '        try:',
-                        `            result = ${problem_name}(*input_data)`,
+                        `            result = ${function_name}(*input_data)`,
                         '            stdout_output = sys.stdout.getvalue().strip()',
                         '        finally:',
                         '            sys.stdout = stdout_backup',
@@ -258,9 +250,7 @@ async function generateRunnableCode(
             break;
         case SupportedLanguages.cpp:
             version = '10.2.0';
-            console.log('TestCases:', JSON.stringify(testcases));
-            console.log('Params:', JSON.stringify(params_list));
-            const helperCode = generateCppCode(testcases, problem_name, params_list, output_type);
+            const helperCode = generateCppCode(testcases, function_name, params_list, output_type);
 
             files = [
                 {

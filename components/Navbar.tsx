@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import MemoryIcon from '@mui/icons-material/Memory';
 import { Button, buttonVariants } from './Button';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { Suspense } from 'react';
@@ -16,7 +15,7 @@ const Navbar = (props: Props) => {
 
   return (
     <nav className="absolute z-10 w-full">
-      <div className="flex h-[60px] w-full items-center justify-between p-10">
+      <div className="flex h-[60px] w-full items-center justify-between px-5 py-10">
         <div className="flex items-center gap-4">
           <Link href="/" className="flex items-center gap-2">
             <span className="sr-only">AlgoAssist</span>

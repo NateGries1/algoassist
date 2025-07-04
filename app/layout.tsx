@@ -1,8 +1,13 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Poppins } from 'next/font/google';
 import './globals.css';
 import SessionWrapper from '@/components/SessionWrapper';
 const inter = Inter({ subsets: ['latin'] });
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  variable: '--font-poppins',
+});
 
 export const metadata: Metadata = {
   title: 'AlgoAssist',
@@ -29,7 +34,7 @@ export default function RootLayout({
     <SessionWrapper>
       <html lang="en">
         <body
-          className={`${inter.className} flex max-h-screen h-screen flex-col bg-neutral-800 text-xs text-white overscroll-y-none`}
+          className={`${inter.className} ${poppins.variable} flex max-h-screen h-screen flex-col bg-neutral-800 text-white overscroll-y-none`}
         >
           {children}
         </body>

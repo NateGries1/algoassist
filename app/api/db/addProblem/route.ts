@@ -115,6 +115,10 @@ const ValidateProblem = (problem: Problem) => {
 
         for (const testcase of testcases) {
             const args = testcase.in;
+            if (args.length !== problem.param_type.length) {
+                return false;
+            }
+
             for (let i = 0; i < args.length; ++i) {
                 const expectedType = paramMappings[problem.param_type[i]];
                 if (expectedType === 'array') {

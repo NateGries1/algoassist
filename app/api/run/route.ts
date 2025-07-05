@@ -187,6 +187,8 @@ async function generateRunnableCode(
     let version = '';
     let files = [];
 
+    console.log('Code Info:\n', testcases, function_name, params_list, output_type);
+
     const isLinkedList = params_list?.includes('ListNode*') || output_type === 'ListNode*';
     const linkedListHelpers: string[] = isLinkedList ? suffix['linkedlist'][language] : [];
 

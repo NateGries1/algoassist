@@ -218,6 +218,12 @@ export default function CreateProblem() {
 
             for (const testcase of testcases) {
                 const args = testcase.in;
+                if (args.length !== parameters.length) {
+                    setTestcaseError(`Testcase ${testcases.indexOf(testcase) + 1} input length mismatch. Expected ${parameters.length}, got ${args.length}.`);
+                    hasError = true;
+                    break;
+                }
+
                 for (let i = 0; i < args.length; ++i) {
                     console.log(i, parameters[i]);
                     const expectedType = paramMappings[parameters[i]];

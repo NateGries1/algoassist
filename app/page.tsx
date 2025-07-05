@@ -6,6 +6,9 @@ import Hero from '@/components/Hero';
 import Features from '@/components/Features';
 import Footer from '@/components/Footer';
 import LogoClouds from '@/components/LogoClouds';
+
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   const {
     result,

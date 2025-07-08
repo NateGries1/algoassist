@@ -1,12 +1,10 @@
 "use client";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import addData from '@/lib/firebase/addData';
-import getDocument from '@/lib/firebase/getData';
 import { useState } from 'react';
-import { Problem } from '@/types/problem';
+import { useRouter} from 'next/navigation';
+import { Problem as ProblemType} from '@/types/problem';
+import Problem from './Problem';
 import { Testcases } from '@/types/testcases';
 import Navbar from './Navbar';
-import getProblems from '@/lib/firebase/getProblem';
 import Description from './addProblem/Description';
 import Difficulty from './addProblem/Difficulty';
 import Parameters from './addProblem/Parameters';
@@ -16,11 +14,8 @@ import Title from './addProblem/Title';
 import Topics from './addProblem/Topics';
 import LcNumber from './addProblem/LcNumber';
 import FunctionName from './addProblem/FunctionName';
-
-type TestcaseForm = {
-    in: string;
-    out: string;
-};
+import { TestcaseForm } from '@/types/testcaseForm';
+import { FormData } from '@/types/formData';
 
 const paramMappings: Record<string, string> = {
     'int': 'number',
@@ -30,232 +25,147 @@ const paramMappings: Record<string, string> = {
 };
 
 export default function CreateProblem() {
-    const [titleName, setTitleName] = useState<string>('');
-    const [titleError, setTitleError] = useState<string>('');
-    const [functionName, setFunctionName] = useState<string>('');
-    const [functionNameError, setFunctionNameError] = useState<string>('');
-    const [lcNumber, setLcNumber] = useState<number>(0);
-    const [lcError, setLcError] = useState<string>('');
-    const [returnType, setReturnType] = useState<string>('int');
-    const [parameters, setParameters] = useState<string[]>([]);
-    const [paramNames, setParamNames] = useState<string[]>([]);
-    const [paramError, setParamError] = useState<string>('');
-    const [testcaseForms, setTestcaseForms] = useState<TestcaseForm[]>([]);
-    const [testcases, setTestcases] = useState<Testcases>([]);
-    const [testcaseError, setTestcaseError] = useState<string>('');
-    const [description, setDescription] = useState<string>('');
-    const [descriptionError, setDescriptionError] = useState<string>('');
-    const [difficulty, setDifficulty] = useState<string>('easy');
-    const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
-    const [topicError, setTopicError] = useState<string>('');
-
-    const allTopics = ['Arrays', 'Strings', 'Recursion', 'Trees', 'Graphs', 'Linked Lists', 'Dynamic Programming', 'Sorting', 'Searching', 'Hashing', 'Greedy Algorithms', 'Backtracking', 'Bit Manipulation', 'Mathematics'];
-
-    const handleTitleNameChange = (value: string) => {
-        const oldFunctionName = titleName && titleName
-            .replace(/[_-]/g, ' ')
-            .trim()
-            .split(/\s+/)
-            .map((w, i) => i === 0 ? w.toLowerCase() : w[0].toUpperCase() + w.slice(1).toLowerCase())
-            .join('');
-        setTitleName(value);
-
-        if (!functionName || oldFunctionName == functionName) {
-            const newFunctionName = value
-                .replace(/[_-]/g, ' ')
-                .trim()
-                .split(/\s+/) 
-                .map((w, i) => i === 0 ? w.toLowerCase() : w[0].toUpperCase() + w.slice(1).toLowerCase())
-                .join('');
-            setFunctionName(newFunctionName);
-        }
-        
+    const initialForm: FormData = {
+        titleName: '',
+        titleError: '',
+        functionName: '',
+        functionNameError: '',
+        lcNumber: 0,
+        lcError: '',
+        returnType: 'int',
+        parameters: [],
+        paramNames: [],
+        paramError: '',
+        testcaseForms: [],
+        testcases: [],
+        testcaseError: '',
+        description: '',
+        descriptionError: '',
+        difficulty: 'easy',
+        selectedTopics: [],
+        topicError: '',
     };
 
+    const [formData, setFormData] = useState<FormData>(initialForm);
+    const [viewPreview, setViewPreview] = useState<boolean>(false);
+    const [problemPreview, setProblemPreview] = useState<ProblemType | null>(null);
+    const allTopics = ['Arrays', 'Strings', 'Recursion', 'Trees', 'Graphs', 'Linked Lists', 'Dynamic Programming', 'Sorting', 'Searching', 'Hashing', 'Greedy Algorithms', 'Backtracking', 'Bit Manipulation', 'Mathematics'];
+    
+    const router = useRouter();
+
+    const handleTitleNameChange = (value: string) => {
+        const generateFunctionName = (input: string) =>
+            input
+                .replace(/[_-]/g, ' ')
+                .trim()
+                .split(/\s+/)
+                .map((w, i) =>
+                    i === 0 ? w.toLowerCase() : w[0].toUpperCase() + w.slice(1).toLowerCase()
+                )
+                .join('');
+
+        const newFunctionName = generateFunctionName(value);
+        const oldFunctionName = generateFunctionName(formData.titleName);
+
+        const shouldUpdateFunctionName =
+            !formData.functionName || formData.functionName === oldFunctionName;
+
+        setFormData({
+            ...formData,
+            titleName: value,
+            functionName: shouldUpdateFunctionName ? newFunctionName : formData.functionName,
+        });
+    };
+
+
     const handleSelectTopic = (topic: string) => {
-        if (!selectedTopics.includes(topic)) {
-            setSelectedTopics([...selectedTopics, topic]);
+        if (!formData.selectedTopics.includes(topic)) {
+            setFormData({ ...formData, selectedTopics: [...formData.selectedTopics, topic] });
         }
     }
 
     const handleRemoveTopic = (topic: string) => {
-        setSelectedTopics(selectedTopics.filter(t => t !== topic));
+        setFormData({ ...formData, selectedTopics: formData.selectedTopics.filter(t => t !== topic) });
     }
 
     const handleParamChange = (index: number, value: string) => {
-        const updated = [...parameters];
+        const updated = [...formData.parameters];
         updated[index] = value;
-        setParameters(updated);
+        setFormData({ ...formData, parameters: updated });
         console.log("Updated params:", updated);
     };
 
     const handleParamNameChange = (index: number, value: string) => {
-        const updated = [...paramNames];
+        const updated = [...formData.paramNames];
         updated[index] = value;
-        setParamNames(updated);
+        setFormData({ ...formData, paramNames: updated });
     };
 
     const addParameter = () => {
-        setParameters([...parameters, 'int']);
-        setParamNames([...paramNames, '']);
+        setFormData({ ...formData, parameters: [...formData.parameters, 'int'], paramNames: [...formData.paramNames, ''] });
     };
 
     const removeParameter = (index: number) => {
-        const updated = parameters.filter((_, i) => i !== index);
-        setParameters(updated);
-        const updatedNames = paramNames.filter((_, i) => i !== index);
-        setParamNames(updatedNames);
+        //console.log(formData.parameters.length, formData.paramNames.length);
+        const updated = formData.parameters.filter((_, i) => i !== index);
+        const updatedNames = formData.paramNames.filter((_, i) => i !== index);
+        //console.log(updated.length, updatedNames.length);
+        setFormData({ ...formData, parameters: updated, paramNames: updatedNames });
     };
 
     const handleTestcaseInputChange = (index: number, value: string) => {
-        const updated = [...testcaseForms];
+        const updated = [...formData.testcaseForms];
         updated[index].in = value;
         try {
             const fullInput = "[" + value + "]";
             const parsedInput = JSON.parse(fullInput);
-            testcases[index].in = parsedInput;
-            setTestcases([...testcases]);
+            formData.testcases[index].in = parsedInput;
+            setFormData({ ...formData, testcases: [...formData.testcases] });
         } catch (error) {}
-        setTestcaseForms(updated);
+        setFormData({ ...formData, testcaseForms: updated });
     };
 
     const handleTestcaseOutputChange = (index: number, value: string) => {
-        const updated = [...testcaseForms];
+        const updated = [...formData.testcaseForms];
         updated[index].out = value;
+        console.log("Output value:", value);
         try {
             const parsedOutput = JSON.parse(value);
-            testcases[index].out = parsedOutput;
-            setTestcases([...testcases]);
+            formData.testcases[index].out = parsedOutput;
+            console.log("Output length:", parsedOutput.length, parsedOutput);
+            setFormData({ ...formData, testcases: [...formData.testcases] });
         } catch (error) {}
-        setTestcaseForms(updated);
+        setFormData({ ...formData, testcaseForms: updated });
     };
 
     const addTestcase = () => {
-        setTestcaseForms([...testcaseForms, { in: '', out: '' }]);
-        setTestcases([...testcases, { in: [], out: [] }]);
+        setFormData({ ...formData, testcaseForms: [...formData.testcaseForms, { in: '', out: '' }], testcases: [...formData.testcases, { in: [], out: null }] });
     };
 
     const removeTestcase = (index: number) => {
-        const updated = testcases.filter((_, i) => i !== index);
-        const updatedForms = testcaseForms.filter((_, i) => i !== index);
-        setTestcaseForms(updatedForms);
-        setTestcases(updated);
+        const updated = formData.testcases.filter((_, i) => i !== index);
+        const updatedForms = formData.testcaseForms.filter((_, i) => i !== index);
+        setFormData({ ...formData, testcaseForms: updatedForms, testcases: updated });
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            let hasError = false;
-
-            const titleRegex = /^[a-zA-Z0-9 ]+$/;
-            if (!titleName) {
-                setTitleError('Enter a title');
-                hasError = true;
-            } else if (!titleRegex.test(titleName)) {
-                setTitleError('Title can only contain alphanumeric characters and spaces.');
-                hasError = true;
-            } else {
-                setTitleError('');
-            }
-
-            const reservedWords = new Set([
-                "and","as","assert","auto","bitand","bitor","bool","break","case","catch","char","class","compl","const","continue","default","delete","do","double","else","enum","export","extern","false","float","for","friend","goto","if","import","inline","int","long","mutable","namespace","new","not","or","private","protected","public","register","return","short","signed","sizeof","static","struct","super","switch","template","this","throw","true","try","typedef","typeid","typename","union","unsigned","using","virtual","void","volatile","while"
-            ]); // one-word keywords for JS, C++, and Python
-            const functionNameRegex = /^[a-z][a-zA-Z]*$/;
-            if (!functionName) {
-                setFunctionNameError('Include a function name');
-                hasError = true;
-            } else if (!functionNameRegex.test(functionName)) {
-                setFunctionNameError('Title must be in camelCase.');
-                hasError = true;
-            } else if (reservedWords.has(functionName)) {
-                setFunctionNameError('Title cannot be a reserved keyword.');
-                hasError = true;
-            } else {
-                setFunctionNameError('');
-            }
-
-            if (lcNumber == 0) {
-                setLcError('Enter a valid Leetcode number.');
-                hasError = true;
-            } else {
-                setLcError('');
-            }
-
-            if (parameters.length === 0) {
-                setParamError('Please add at least one parameter.');
-                hasError = true;
-            } else {
-                setParamError('');
-            }
-
-            const paramRegex = /^[a-z][a-zA-Z0-9_]*$/;
-            if (paramNames.some(param => !paramRegex.test(param))) {
-                setParamError('Parameters can only contain letters and underscores.');
-                hasError = true;
-            }
-
-            if (description.trim() === '') {
-                setDescriptionError('Description cannot be empty.');
-                hasError = true;
-            } else {
-                setDescriptionError('');
-            }
-
-            if (selectedTopics.length === 0) {
-                setTopicError('Please select at least one topic.');
-                hasError = true;
-            } else {
-                setTopicError('');
-            }
-
-            if (testcases.length < 3) {
-                setTestcaseError('Please add at least 3 testcases.');
-                hasError = true;
-            } else {
-                setTestcaseError('');
-            }
-
-            for (const testcase of testcases) {
-                const args = testcase.in;
-                if (args.length !== parameters.length) {
-                    setTestcaseError(`Testcase ${testcases.indexOf(testcase) + 1} input length mismatch. Expected ${parameters.length}, got ${args.length}.`);
-                    hasError = true;
-                    break;
-                }
-
-                for (let i = 0; i < args.length; ++i) {
-                    console.log(i, parameters[i]);
-                    const expectedType = paramMappings[parameters[i]];
-                    if (expectedType === 'array') {
-                        if (Array.isArray(args[i]) == false) {
-                            setTestcaseError(`Testcase ${testcases.indexOf(testcase) + 1} input type mismatch for parameter ${i+1}. Expected ${expectedType}, got ${typeof args[i]}.`);
-                            hasError = true;
-                        }
-                    } else {
-                        if (typeof args[i] !== expectedType) {
-                            setTestcaseError(`Testcase ${testcases.indexOf(testcase) + 1} input type mismatch for parameter ${i+1}. Expected ${expectedType}, got ${typeof args[i]}.`);
-                            hasError = true;
-                        }
-                    }
-                }
-            }
-
-            if (hasError) {
+            if (!ValidateProblem(formData, setFormData)) {
                 throw new Error('Validation errors occurred. Please fix them before submitting.');
             }
 
-            const problemData: Problem = {
-                content: description,
-                difficulty: difficulty,
-                title: titleName,
-                topic: selectedTopics,
-                lc_number: lcNumber,
-                function: functionName,
-                testcases: JSON.stringify(testcases),
-                params: paramNames.join(', '),
-                param_type: parameters,
-                output_type: returnType,
+            const problemData: ProblemType = {
+                content: formData.description,
+                difficulty: formData.difficulty,
+                title: formData.titleName,
+                topic: formData.selectedTopics,
+                lc_number: formData.lcNumber,
+                function: formData.functionName,
+                testcases: formData.testcases,
+                params: formData.paramNames.join(', '),
+                param_type: formData.parameters,
+                output_type: formData.returnType,
             };
 
             const response = await fetch('/api/db/addProblem', {
@@ -269,12 +179,53 @@ export default function CreateProblem() {
             const {data, error} = await response.json();
             if (data && !error) {
                 console.log("Added problem successfully:", data);
+                setProblemPreview(problemData);
             }
-        }
-        catch(error){
+        } catch (error) {
             console.error("Error adding problem:", error);
         }
     };
+
+    if (viewPreview && problemPreview) {
+        return (
+            <Problem
+                result={problemPreview}
+            />
+        );
+    }
+
+    if (problemPreview) {
+        const [viewPreview, setViewPreview] = useState(false);
+        const router = useRouter();
+
+        return (
+            <div className="flex flex-col gap-6 mt-8">
+                {/* Action Buttons */}
+                <div className="flex flex-wrap gap-4">
+                    <button
+                    onClick={() => setFormData(initialForm)}
+                    className="px-4 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition"
+                    >
+                    Create Another Problem
+                    </button>
+                    <button
+                    onClick={() => router.push('/problems')}
+                    className="px-4 py-2 rounded-xl bg-gray-700 text-white hover:bg-gray-800 transition"
+                    >
+                    View All Problems
+                    </button>
+                    {!viewPreview && (
+                    <button
+                        onClick={() => setViewPreview(true)}
+                        className="px-4 py-2 rounded-xl bg-green-600 text-white hover:bg-green-700 transition"
+                    >
+                        Preview Problem
+                    </button>
+                    )}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <>
@@ -293,66 +244,66 @@ export default function CreateProblem() {
                         <div className="min-w-[300px] flex-1 flex flex-col gap-y-3">
                             <Title
                                 handleTitleNameChange={handleTitleNameChange}
-                                titleError={titleError}
+                                titleError={formData.titleError}
                             />
                             <div className="flex justify-between">
                                 <FunctionName
-                                    setFunctionName={setFunctionName}
-                                    functionName={functionName}
-                                    functionNameError={functionNameError}
+                                    setFunctionName={(name) => setFormData({ ...formData, functionName: name })}
+                                    functionName={formData.functionName}
+                                    functionNameError={formData.functionNameError}
                                 />
                                 <LcNumber
-                                    setLcNumber={setLcNumber}
-                                    lcError={lcError}
+                                    setLcNumber={(number) => setFormData({ ...formData, lcNumber: number })}
+                                    lcError={formData.lcError}
                                 />
                             </div>
                             <div className="flex justify-between">
                                 <ReturnType
-                                    setReturnType={setReturnType}
+                                    setReturnType={(type) => setFormData({ ...formData, returnType: type })}
                                 />
                                 <Difficulty
-                                setDifficulty={setDifficulty}
-                            />
+                                    setDifficulty={(value) => setFormData({ ...formData, difficulty: value })}
+                                />
                             </div>
                             
                             <Topics
-                                selectedTopics={selectedTopics}
+                                selectedTopics={formData.selectedTopics}
                                 handleSelectTopic={handleSelectTopic}
                                 handleRemoveTopic={handleRemoveTopic}
                                 allTopics={allTopics}
-                                topicError={topicError}
+                                topicError={formData.topicError}
                             />
                         </div>
                         {/* Middle */}
                         <div className="min-w-[300px] flex-1">
                             <Description
-                                description={description}
-                                setDescription={setDescription}
-                                descriptionError={descriptionError}
+                                description={formData.description}
+                                setDescription={(description) => setFormData({ ...formData, description })}
+                                descriptionError={formData.descriptionError}
                             />
                         </div>
                         {/* Right */}
                         <div className="min-w-[300px] flex-1 flex flex-col gap-y-3">
                             <Parameters
-                                parameters={parameters}
-                                paramNames={paramNames}
+                                parameters={formData.parameters}
+                                paramNames={formData.paramNames}
                                 handleParamNameChange={handleParamNameChange}
                                 handleParamChange={handleParamChange}
                                 removeParameter={removeParameter}
                                 addParameter={addParameter}
-                                paramError={paramError}
+                                paramError={formData.paramError}
                             />
                             <AddTestcases
-                                functionName={functionName}
-                                testcaseForms={testcaseForms}
-                                testcases={testcases}
+                                functionName={formData.functionName}
+                                testcaseForms={formData.testcaseForms}
+                                testcases={formData.testcases}
                                 handleTestcaseInputChange={handleTestcaseInputChange}
                                 handleTestcaseOutputChange={handleTestcaseOutputChange}
                                 addTestcase={addTestcase}
                                 removeTestcase={removeTestcase}
-                                parameters={parameters}
-                                returnType={returnType}
-                                testcaseError={testcaseError}
+                                parameters={formData.parameters}
+                                returnType={formData.returnType}
+                                testcaseError={formData.testcaseError}
                             />
                         </div>
                     </div>
@@ -370,3 +321,113 @@ export default function CreateProblem() {
         </>
     );
 }
+
+const ValidateProblem = (formData: FormData, setFormData: React.Dispatch<React.SetStateAction<FormData>>) => {
+    let hasError = false;
+    const titleRegex = /^[a-zA-Z0-9 ]+$/;
+    if (!formData.titleName) {
+        setFormData({ ...formData, titleError: 'Enter a title' });
+        hasError = true;
+    } else if (!titleRegex.test(formData.titleName)) {
+        setFormData({ ...formData, titleError: 'Title can only contain alphanumeric characters and spaces.' });
+        hasError = true;
+    } else {
+        setFormData({ ...formData, titleError: '' });
+    }
+
+    const reservedWords = new Set([
+        "and","as","assert","auto","bitand","bitor","bool","break","case","catch","char","class","compl","const","continue","default","delete","do","double","else","enum","export","extern","false","float","for","friend","goto","if","import","inline","int","long","mutable","namespace","new","not","or","private","protected","public","register","return","short","signed","sizeof","static","struct","super","switch","template","this","throw","true","try","typedef","typeid","typename","union","unsigned","using","virtual","void","volatile","while"
+    ]); // one-word keywords for JS, C++, and Python
+    const functionNameRegex = /^[a-z][a-zA-Z]*$/;
+    if (!formData.functionName) {
+        setFormData({ ...formData, functionNameError: 'Include a function name' });
+        hasError = true;
+    } else if (!functionNameRegex.test(formData.functionName)) {
+        setFormData({ ...formData, functionNameError: 'Title must be in camelCase.' });
+        hasError = true;
+    } else if (reservedWords.has(formData.functionName)) {
+        setFormData({ ...formData, functionNameError: 'Title cannot be a reserved keyword.' });
+        hasError = true;
+    } else {
+        setFormData({ ...formData, functionNameError: '' });
+    }
+
+    if (formData.lcNumber == 0) {
+        setFormData({ ...formData, lcError: 'Enter a valid Leetcode number.' });
+        hasError = true;
+    } else {
+        setFormData({ ...formData, lcError: '' });
+    }
+
+    if (formData.parameters.length === 0) {
+        setFormData({ ...formData, paramError: 'Please add at least one parameter.' });
+        hasError = true;
+    } else {
+        setFormData({ ...formData, paramError: '' });
+    }
+
+    const paramRegex = /^[a-z][a-zA-Z0-9_]*$/;
+    if (formData.paramNames.some(param => !paramRegex.test(param))) {
+        setFormData({ ...formData, paramError: 'Parameters can only contain letters and underscores.' });
+        hasError = true;
+    }
+
+    if (formData.description.trim() === '') {
+        setFormData({ ...formData, descriptionError: 'Description cannot be empty.' });
+        hasError = true;
+    } else {
+        setFormData({ ...formData, descriptionError: '' });
+    }
+
+    if (formData.selectedTopics.length === 0) {
+        setFormData({ ...formData, topicError: 'Please select at least one topic.' });
+        hasError = true;
+    } else {
+        setFormData({ ...formData, topicError: '' });
+    }
+
+    if (formData.testcases.length < 3) {
+        setFormData({ ...formData, testcaseError: 'Please add at least 3 testcases.' });
+        hasError = true;
+    } else {
+        setFormData({ ...formData, testcaseError: '' });
+    }
+
+    for (const testcase of formData.testcases) {
+        const args = testcase.in;
+        if (args.length !== formData.parameters.length) {
+            setFormData({ ...formData, testcaseError: `Testcase ${formData.testcases.indexOf(testcase) + 1} input length mismatch. Expected ${formData.parameters.length}, got ${args.length}.` });
+            hasError = true;
+            break;
+        }
+
+        for (let i = 0; i < args.length; ++i) {
+            console.log(i, formData.parameters[i]);
+            const expectedType = paramMappings[formData.parameters[i]];
+            if (expectedType === 'array') {
+                if (Array.isArray(args[i]) == false) {
+                    setFormData({ ...formData, testcaseError: `Testcase ${formData.testcases.indexOf(testcase) + 1} input type mismatch for parameter ${i+1}. Expected ${expectedType}, got ${typeof args[i]}.` });
+                    hasError = true;
+                }
+            } else {
+                if (typeof args[i] !== expectedType) {
+                    setFormData({ ...formData, testcaseError: `Testcase ${formData.testcases.indexOf(testcase) + 1} input type mismatch for parameter ${i+1}. Expected ${expectedType}, got ${typeof args[i]}.` });
+                    hasError = true;
+                }
+            }
+        }
+
+        if (paramMappings[formData.returnType] === 'array') {
+            if (!Array.isArray(testcase.out)) {
+                setFormData({ ...formData, testcaseError: `Testcase ${formData.testcases.indexOf(testcase) + 1} output type mismatch. Expected array, got ${typeof testcase.out}.` });
+                hasError = true;
+            }
+        } else if (typeof testcase.out !== paramMappings[formData.returnType]) {
+            setFormData({ ...formData, testcaseError: `Testcase ${formData.testcases.indexOf(testcase) + 1} output type mismatch. Expected ${paramMappings[formData.returnType]}, got ${typeof testcase.out}.` });
+            hasError = true;
+        }
+        if (hasError) break;
+    }
+
+    return !hasError;
+};

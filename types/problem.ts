@@ -1,3 +1,4 @@
+import { Testcases } from '@/types/testcases';
 export type Problem = {
     id?: string;
     content: string;
@@ -6,7 +7,7 @@ export type Problem = {
     topic: string[];
     lc_number: number;
     function: string;
-    testcases: string;
+    testcases: Testcases;
     params: string;
     param_type: string[];
     output_type: string;

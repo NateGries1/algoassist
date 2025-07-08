@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 type Props = {
     description: string;
-    setDescription: React.Dispatch<React.SetStateAction<string>>;
+    setDescription: (value: string) => void;
     descriptionError: string;
 }
 

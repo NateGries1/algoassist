@@ -1,7 +1,7 @@
 import React from "react";
 
 type Props = {
-    setDifficulty: React.Dispatch<React.SetStateAction<string>>;
+    setDifficulty: (value: string) => void;
 };
 
 export default function Difficulty({ setDifficulty }: Props) {

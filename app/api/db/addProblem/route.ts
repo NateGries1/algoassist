@@ -16,8 +16,11 @@ const paramMappings: Record<string, string> = {
 
 const ValidateProblem = (problem: Problem) => {
     try {
+        let errorMessage = '';
         const titleRegex = /^[a-zA-Z0-9 ]+$/;
-        if (!problem.title || !titleRegex.test(problem.title)) return false;
+        if (!problem.title || !titleRegex.test(problem.title)) {
+            errorMessage += 'Invalid title. ';
+        }
 
         const reservedWords = new Set([
             'and',
@@ -35,7 +38,7 @@ const ValidateProblem = (problem: Problem) => {
             'compl',
             'const',
             'continue',
-            'default',
+            'defau`lt',
             'delete',
             'do',
             'double',
@@ -91,50 +94,74 @@ const ValidateProblem = (problem: Problem) => {
             !problem.function ||
             !functionNameRegex.test(problem.function) ||
             reservedWords.has(problem.function)
-        )
-            return false;
+        ) {
+            errorMessage += 'Invalid function name. ';
+        }
 
-        if (problem.lc_number == 0) return false;
+        if (problem.lc_number == 0) {
+            errorMessage += 'Invalid Leetcode number. ';
+        }
 
-        if (problem.param_type.length === 0) return false;
+        if (problem.param_type.length === 0) {
+            errorMessage += 'Invalid parameter type. ';
+        }
 
         const paramRegex = /^[a-z][a-zA-Z0-9_]*$/;
         if (
             problem.params
                 .split(', ')
                 .some((param) => !paramRegex.test(param) || reservedWords.has(param))
-        )
-            return false;
+        ) {
+            errorMessage += 'Invalid parameter name. ';
+        }
 
-        if (problem.content.trim() === '') return false;
+        if (problem.content.trim() === '') {
+            errorMessage += 'Invalid problem content. ';
+        }
 
-        if (problem.topic.length === 0) return false;
+        if (problem.topic.length === 0) {
+            errorMessage += 'Invalid problem topic. ';
+        }
 
-        const testcases: Testcases = JSON.parse(problem.testcases);
-        if (testcases.length < 3) return false;
+        const testcases = problem.testcases;
+        if (testcases.length < 3) {
+            errorMessage += 'Invalid test cases. ';
+        }
 
         for (const testcase of testcases) {
             const args = testcase.in;
             if (args.length !== problem.param_type.length) {
-                return false;
+                errorMessage += 'Invalid test case arguments. ';
             }
 
             for (let i = 0; i < args.length; ++i) {
                 const expectedType = paramMappings[problem.param_type[i]];
                 if (expectedType === 'array') {
                     if (Array.isArray(args[i]) == false) {
-                        return false;
+                        errorMessage += 'Invalid test case argument type. ';
                     }
                 } else {
                     if (typeof args[i] !== expectedType) {
-                        return false;
+                        errorMessage += 'Invalid test case argument type. ';
                     }
                 }
             }
+
+            if (paramMappings[problem.output_type] === 'array') {
+                if (!Array.isArray(testcase.out)) {
+                    errorMessage += `Testcase ${testcases.indexOf(testcase) + 1} output type mismatch. Expected array, got ${typeof testcase.out}. `;
+                }
+            } else if (typeof testcase.out !== paramMappings[problem.output_type]) {
+                errorMessage += `Testcase ${testcases.indexOf(testcase) + 1} output type mismatch. Expected ${paramMappings[problem.output_type]}, got ${typeof testcase.out}. `;
+            }
+        }
+
+        if (errorMessage) {
+            console.error('Validation errors found:', errorMessage);
+            return false;
         }
     } catch (error) {
         console.error('Error adding problem:', error);
-        return false;
     }
     return true;
 };
@@ -174,7 +201,7 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const newDocRef = doc(collection(db, 'problem'));
+        const newDocRef = doc(collection(db, 'unverified'));
         const result = await setDoc(newDocRef, problemData, { merge: true });
 
         return NextResponse.json({ message: 'Problem Added Successfully' });

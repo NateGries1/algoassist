@@ -1,7 +1,7 @@
 import React from "react";
 
 type Props = {
-setReturnType: React.Dispatch<React.SetStateAction<string>>;
+setReturnType: (value: string) => void;
 };
 
 export default function ReturnType({ setReturnType }: Props) {

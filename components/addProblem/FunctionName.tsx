@@ -2,7 +2,7 @@ import React from "react";
 
 type Props = {
     functionName: string;
-    setFunctionName: React.Dispatch<React.SetStateAction<string>>;
+    setFunctionName: (name: string) => void;
     functionNameError: string;
 };
 

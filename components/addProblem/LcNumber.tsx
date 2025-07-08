@@ -1,7 +1,7 @@
 import React from "react";
 
 type Props = {
-setLcNumber: React.Dispatch<React.SetStateAction<number>>;
+setLcNumber: (number: number) => void;
 lcError: string;
 };
 

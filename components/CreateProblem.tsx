@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useRouter} from 'next/navigation';
 import { Problem as ProblemType} from '@/types/problem';
 import Problem from './Problem';
-import { Testcases } from '@/types/testcases';
+import { Testcase } from '@/types/testcase';
 import Navbar from './Navbar';
 import Description from './addProblem/Description';
 import Difficulty from './addProblem/Difficulty';
@@ -16,6 +16,7 @@ import LcNumber from './addProblem/LcNumber';
 import FunctionName from './addProblem/FunctionName';
 import { TestcaseForm } from '@/types/testcaseForm';
 import { FormData } from '@/types/formData';
+import keywords from '@/lib/keywords';
 
 const paramMappings: Record<string, string> = {
     'int': 'number',
@@ -162,7 +163,7 @@ export default function CreateProblem() {
                 topic: formData.selectedTopics,
                 lc_number: formData.lcNumber,
                 function: formData.functionName,
-                testcases: formData.testcases,
+                testcases: JSON.stringify(formData.testcases),
                 params: formData.paramNames.join(', '),
                 param_type: formData.parameters,
                 output_type: formData.returnType,
@@ -176,10 +177,12 @@ export default function CreateProblem() {
                 body: JSON.stringify(problemData)
             });
 
-            const {data, error} = await response.json();
-            if (data && !error) {
+            const data = await response.json();
+            if (!data.error) {
                 console.log("Added problem successfully:", data);
                 setProblemPreview(problemData);
+            } else {
+                console.error("Error adding problem:", data.error);
             }
         } catch (error) {
             console.error("Error adding problem:", error);
@@ -325,19 +328,21 @@ export default function CreateProblem() {
 const ValidateProblem = (formData: FormData, setFormData: React.Dispatch<React.SetStateAction<FormData>>) => {
     let hasError = false;
     const titleRegex = /^[a-zA-Z0-9 ]+$/;
+    // Title validation
     if (!formData.titleName) {
         setFormData({ ...formData, titleError: 'Enter a title' });
         hasError = true;
     } else if (!titleRegex.test(formData.titleName)) {
         setFormData({ ...formData, titleError: 'Title can only contain alphanumeric characters and spaces.' });
         hasError = true;
+    } else if (keywords.has(formData.titleName)) {
+        setFormData({ ...formData, titleError: 'Title cannot be a reserved keyword.' });
+        hasError = true;
     } else {
         setFormData({ ...formData, titleError: '' });
     }
 
-    const reservedWords = new Set([
-        "and","as","assert","auto","bitand","bitor","bool","break","case","catch","char","class","compl","const","continue","default","delete","do","double","else","enum","export","extern","false","float","for","friend","goto","if","import","inline","int","long","mutable","namespace","new","not","or","private","protected","public","register","return","short","signed","sizeof","static","struct","super","switch","template","this","throw","true","try","typedef","typeid","typename","union","unsigned","using","virtual","void","volatile","while"
-    ]); // one-word keywords for JS, C++, and Python
+    // Function name validation
     const functionNameRegex = /^[a-z][a-zA-Z]*$/;
     if (!formData.functionName) {
         setFormData({ ...formData, functionNameError: 'Include a function name' });
@@ -345,13 +350,14 @@ const ValidateProblem = (formData: FormData, setFormData: React.Dispatch<React.S
     } else if (!functionNameRegex.test(formData.functionName)) {
         setFormData({ ...formData, functionNameError: 'Title must be in camelCase.' });
         hasError = true;
-    } else if (reservedWords.has(formData.functionName)) {
+    } else if (keywords.has(formData.functionName)) {
         setFormData({ ...formData, functionNameError: 'Title cannot be a reserved keyword.' });
         hasError = true;
     } else {
         setFormData({ ...formData, functionNameError: '' });
     }
 
+    // Leetcode number validation
     if (formData.lcNumber == 0) {
         setFormData({ ...formData, lcError: 'Enter a valid Leetcode number.' });
         hasError = true;
@@ -359,6 +365,7 @@ const ValidateProblem = (formData: FormData, setFormData: React.Dispatch<React.S
         setFormData({ ...formData, lcError: '' });
     }
 
+    // Parameter validation
     if (formData.parameters.length === 0) {
         setFormData({ ...formData, paramError: 'Please add at least one parameter.' });
         hasError = true;
@@ -372,6 +379,7 @@ const ValidateProblem = (formData: FormData, setFormData: React.Dispatch<React.S
         hasError = true;
     }
 
+    // Description validation
     if (formData.description.trim() === '') {
         setFormData({ ...formData, descriptionError: 'Description cannot be empty.' });
         hasError = true;
@@ -379,6 +387,7 @@ const ValidateProblem = (formData: FormData, setFormData: React.Dispatch<React.S
         setFormData({ ...formData, descriptionError: '' });
     }
 
+    // Topics validation
     if (formData.selectedTopics.length === 0) {
         setFormData({ ...formData, topicError: 'Please select at least one topic.' });
         hasError = true;
@@ -386,6 +395,7 @@ const ValidateProblem = (formData: FormData, setFormData: React.Dispatch<React.S
         setFormData({ ...formData, topicError: '' });
     }
 
+    // Testcases validation
     if (formData.testcases.length < 3) {
         setFormData({ ...formData, testcaseError: 'Please add at least 3 testcases.' });
         hasError = true;

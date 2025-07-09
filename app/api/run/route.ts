@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Testcases } from '@/types/testcases';
+import { Testcase } from '@/types/testcase';
 
 enum SupportedLanguages {
     cpp = 'cpp',
@@ -103,7 +103,7 @@ const vectorHelper: string[] = [
 ];
 
 function generateCppCode(
-    testcases: Testcases,
+    testcases: Testcase[],
     functionName: string,
     params_list: string[],
     output_type: string
@@ -180,7 +180,7 @@ async function generateRunnableCode(
     function_name: string,
     language: SupportedLanguages,
     code: string,
-    testcases: Testcases,
+    testcases: Testcase[],
     params_list: string[],
     output_type: string
 ) {

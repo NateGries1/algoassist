@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import { Button, buttonVariants } from './Button';
+import { Testcase } from '@/types/testcase';
 
 type Props = {
-  testcases: string;
+  testcases: Testcase[];
   params: string;
   stdout: string;
   stderr: string;
@@ -13,8 +14,10 @@ type Props = {
 
 export default function Output({ testcases, params, stdout, stderr, output_type }: Props) {
   const [selected, setSelected] = useState<number>(0);
+
   stdout = stdout.trim();
   const fixed = stdout.replace(/(?<!\\)\n/g, "\\n");
+  const output = JSON.parse(fixed.trim());
 
   try {
     if (stderr)
@@ -24,18 +27,7 @@ export default function Output({ testcases, params, stdout, stderr, output_type 
         </div>
       );
 
-    
-
-    const output = JSON.parse(fixed.trim());
-
-    const result: {
-      in: any[];
-      out: any;
-    }[] = JSON.parse(testcases);
-
     if (!testcases) return null;
-
-    
 
     const compareArrays = (expected: any[], actual: any[]): boolean => {
       return JSON.stringify(expected) === JSON.stringify(actual);
@@ -48,7 +40,7 @@ export default function Output({ testcases, params, stdout, stderr, output_type 
     return (
       <div className="flex h-full flex-col gap-4 text-xs overflow-y-auto font-mono pb-2">
         <div className="flex flex-wrap items-center gap-2">
-          {result.map((_, i) => (
+          {testcases.map((_, i) => (
             <Button
               key={i}
               onClick={() => setSelected(i)}
@@ -59,21 +51,21 @@ export default function Output({ testcases, params, stdout, stderr, output_type 
               })}
             >
               <ul
-                className={`list-inside list-disc ${isTestCaseValid(result[i].out, output[i].output, output_type) ? 'marker:text-green-600' : 'marker:text-red-600'}`}
+                className={`list-inside list-disc ${isTestCaseValid(testcases[i].out, output[i].output, output_type) ? 'marker:text-green-600' : 'marker:text-red-600'}`}
               >
                 <li>Case {i + 1}</li>
               </ul>
             </Button>
           ))}
         </div>
-        {result[selected] && (
+        {testcases[selected] && (
           <div className="flex flex-col gap-4 font-mono">
             <div className="flex flex-col gap-2">
               <h3>Input</h3>
 
               {params.split(',').map((param, i) => (
                 <span key={i} className="rounded bg-neutral-700 p-2">
-                  {param}: {JSON.stringify(result[selected].in[i])}
+                  {param}: {JSON.stringify(testcases[selected].in[i])}
                 </span>
               ))}
             </div>
@@ -90,7 +82,7 @@ export default function Output({ testcases, params, stdout, stderr, output_type 
               </span>
               <div>Expected: </div>
               <span className="rounded bg-neutral-700 p-2">
-                {JSON.stringify(result[selected].out)}
+                {JSON.stringify(testcases[selected].out)}
               </span>
             </div>
           </div>

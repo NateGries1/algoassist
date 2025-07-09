@@ -1,4 +1,5 @@
-import { Testcases } from '@/types/testcases';
+import { Testcase } from '@/types/testcase';
+
 export type Problem = {
     id?: string;
     content: string;
@@ -7,7 +8,7 @@ export type Problem = {
     topic: string[];
     lc_number: number;
     function: string;
-    testcases: Testcases;
+    testcases: string;
     params: string;
     param_type: string[];
     output_type: string;

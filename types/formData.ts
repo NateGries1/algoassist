@@ -1,4 +1,4 @@
-import { Testcases } from '@/types/testcases';
+import { Testcase } from '@/types/testcase';
 import { TestcaseForm } from '@/types/testcaseForm';
 
 export type FormData = {
@@ -13,7 +13,7 @@ export type FormData = {
     paramNames: string[];
     paramError: string;
     testcaseForms: TestcaseForm[];
-    testcases: Testcases;
+    testcases: Testcase[];
     testcaseError: string;
     description: string;
     descriptionError: string;

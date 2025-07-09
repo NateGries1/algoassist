@@ -6,8 +6,8 @@ import { type editor } from 'monaco-editor';
 import { Button } from './Button';
 import LoadingDots from './LoadingDots';
 import { ExecutionResult } from '@/types/executionResult';
-import { AIMessage } from '@/types/aiMessage';
 import { Problem } from '@/types/problem';
+import { Testcase } from '@/types/testcase';
 
 enum SupportedLanguages {
   cpp = 'cpp',
@@ -45,11 +45,6 @@ const snippets = {
   }
 }
 
-type TestCase = {
-  in: any[];
-  out: any[];
-};
-
 type Props = {
   problem: Problem;
   onChange?: (value: string | undefined, event: editor.IModelContentChangedEvent) => void;
@@ -76,7 +71,7 @@ export default function CodeEditor({
   const outputType = problem.output_type;
   const functionName = problem.function;
   const params = problem.params;
-  const testcases = JSON.parse(problem.testcases);
+  const testcases: Testcase[] = JSON.parse(problem.testcases);
   const param_type = problem.param_type;
 
   let prefix = "";

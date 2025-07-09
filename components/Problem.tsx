@@ -15,6 +15,7 @@ import { ChatMessage } from '@/types/chatMessage';
 import Output from './Output';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import Navbar from './Navbar';
+import { Testcase } from '@/types/testcase';
 
 enum SupportedLanguages {
   cpp = 'cpp',
@@ -52,6 +53,8 @@ export default function Problem({ result }: Props) {
   const [isFinished, setIsFinished] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [initialPrompt, setInitialPrompt] = useState<number>(0);
+
+  const testcases: Testcase[] = JSON.parse(result.testcases)
 
   const handleSetInitialPrompt = (newValue:number) => {
     setInitialPrompt(newValue)
@@ -201,14 +204,14 @@ export default function Problem({ result }: Props) {
           </div>
 
           <div className="p-4 bg-neutral-800 flex-grow">
-            {tabIndex === 0 && <Testcases testcases={result.testcases} params={result.params} />}
+            {tabIndex === 0 && <Testcases testcases={testcases} params={result.params} />}
             {tabIndex === 1 && (
               <>
                 {executionResult.language ? (
                   <Output
                     stdout={executionResult.run.stdout}
                     stderr={executionResult.run.stderr}
-                    testcases={result.testcases}
+                    testcases={testcases}
                     params={result.params}
                     output_type={result.output_type}
                   />
@@ -295,7 +298,7 @@ export default function Problem({ result }: Props) {
                       </div>
                       <div className="flex-1 overflow-y-auto p-4">
                         {tabIndex === 0 ? (
-                          <Testcases testcases={result.testcases} params={result.params} />
+                          <Testcases testcases={testcases} params={result.params} />
                         ) : tabIndex === 2 ? (
                           <div className="h-full w-full">
                             <Chat
@@ -315,11 +318,11 @@ export default function Problem({ result }: Props) {
                           <div className="flex h-full w-full flex-col">
                             <div className="flex items-center"></div>
                             <Output
-                              testcases={result.testcases}
+                              testcases={testcases}
                               params={result.params}
                               stdout={executionResult.run.stdout}
                               stderr={executionResult.run.stderr}
-                              output_type = {result.output_type}
+                              output_type={result.output_type}
                             />
                           </div>
                         ) : (

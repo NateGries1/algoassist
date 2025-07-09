@@ -16,7 +16,7 @@ export default async function Home() {
   }: {
     result: Problem[];
     error: unknown;
-  } = await getDocuments('problem');
+  } = await getDocuments('unverified');
   
   if (error) {
     return <div>{String(error)}</div>;

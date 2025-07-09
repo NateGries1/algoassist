@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFirestore, collection, doc, setDoc, query, where, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, doc, setDoc } from 'firebase/firestore';
 import firebase_app from '@/lib/firebase/firebase';
 import getProblem from '@/lib/firebase/getProblem';
 import { Problem } from '@/types/problem';
-import { Testcases } from '@/types/testcases';
+import keywords from '@/lib/keywords';
 
 const db = getFirestore(firebase_app);
 
@@ -22,78 +22,11 @@ const ValidateProblem = (problem: Problem) => {
             errorMessage += 'Invalid title. ';
         }
 
-        const reservedWords = new Set([
-            'and',
-            'as',
-            'assert',
-            'auto',
-            'bitand',
-            'bitor',
-            'bool',
-            'break',
-            'case',
-            'catch',
-            'char',
-            'class',
-            'compl',
-            'const',
-            'continue',
-            'defau`lt',
-            'delete',
-            'do',
-            'double',
-            'else',
-            'enum',
-            'export',
-            'extern',
-            'false',
-            'float',
-            'for',
-            'friend',
-            'goto',
-            'if',
-            'import',
-            'inline',
-            'int',
-            'long',
-            'mutable',
-            'namespace',
-            'new',
-            'not',
-            'or',
-            'private',
-            'protected',
-            'public',
-            'register',
-            'return',
-            'short',
-            'signed',
-            'sizeof',
-            'static',
-            'struct',
-            'super',
-            'switch',
-            'template',
-            'this',
-            'throw',
-            'true',
-            'try',
-            'typedef',
-            'typeid',
-            'typename',
-            'union',
-            'unsigned',
-            'using',
-            'virtual',
-            'void',
-            'volatile',
-            'while'
-        ]); // one-word keywords for JS, C++, and Python
         const functionNameRegex = /^[a-z][a-zA-Z]*$/;
         if (
             !problem.function ||
             !functionNameRegex.test(problem.function) ||
-            reservedWords.has(problem.function)
+            keywords.has(problem.function)
         ) {
             errorMessage += 'Invalid function name. ';
         }
@@ -110,7 +43,7 @@ const ValidateProblem = (problem: Problem) => {
         if (
             problem.params
                 .split(', ')
-                .some((param) => !paramRegex.test(param) || reservedWords.has(param))
+                .some((param) => !paramRegex.test(param) || keywords.has(param))
         ) {
             errorMessage += 'Invalid parameter name. ';
         }
@@ -123,7 +56,7 @@ const ValidateProblem = (problem: Problem) => {
             errorMessage += 'Invalid problem topic. ';
         }
 
-        const testcases = problem.testcases;
+        const testcases = JSON.parse(problem.testcases);
         if (testcases.length < 3) {
             errorMessage += 'Invalid test cases. ';
         }
@@ -169,7 +102,7 @@ const ValidateProblem = (problem: Problem) => {
 export async function POST(req: NextRequest) {
     const problemData = await req.json();
     if (!ValidateProblem(problemData)) {
-        return NextResponse.json({ error: 'Failed Validation' }, { status: 400 });
+        return NextResponse.json({ error: 'Failed Validation' });
     }
 
     try {
@@ -187,25 +120,22 @@ export async function POST(req: NextRequest) {
         }
 
         if (titleResult && titleResult.length > 0) {
-            console.log('Problem already found:', titleResult);
-            return NextResponse.json(
-                { error: 'Problem with this title already exists' },
-                { status: 400 }
-            );
+            return NextResponse.json({ error: 'Problem with this title already exists' });
         }
 
         if (functionResult && functionResult.length > 0) {
-            return NextResponse.json(
-                { error: 'Problem with this function already exists' },
-                { status: 400 }
-            );
+            return NextResponse.json({ error: 'Problem with this function already exists' });
         }
 
         const newDocRef = doc(collection(db, 'unverified'));
-        const result = await setDoc(newDocRef, problemData, { merge: true });
+        const result = await setDoc(
+            newDocRef,
+            { ...problemData, testcases: JSON.stringify(problemData.testcases) },
+            { merge: true }
+        );
 
-        return NextResponse.json({ message: 'Problem Added Successfully' });
+        return NextResponse.json({ error: null });
     } catch (error) {
-        return NextResponse.json({ error: 'Failed to add problem:' + error }, { status: 500 });
+        return NextResponse.json({ error: `Failed to add problem: ${String(error)}` });
     }
 }

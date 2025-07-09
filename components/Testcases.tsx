@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import { Button, buttonVariants } from './Button';
+import { Testcase } from '@/types/testcase';
 
 type Props = {
-  testcases: string;
+  testcases: Testcase[];
   params: string;
 };
 
@@ -12,17 +13,12 @@ export default function Testcases({ testcases, params }: Props) {
   const [selected, setSelected] = useState<number>(0);
 
   // Adjusting the type to match the new structure
-  const result: {
-    in: any[]; // First element is an array of numbers, second is a number
-    out: number[]; // Directly an array of numbers
-  }[] = JSON.parse(testcases);
-
   if (!testcases) return null;
 
   return (
     <div className="flex h-full flex-col gap-4 text-xs overflow-y-auto font-mono pb-2">
       <div className="flex flex-wrap items-center gap-2">
-        {result.map((_, i) => (
+        {testcases.map((_, i) => (
           <Button
             key={i}
             onClick={() => setSelected(i)}
@@ -36,13 +32,13 @@ export default function Testcases({ testcases, params }: Props) {
           </Button>
         ))}
       </div>
-      {result[selected] && (
+      {testcases[selected] && (
         <div className="flex flex-col gap-4 font-mono">
           <div className="flex flex-col gap-2">
             <h3>Input</h3>
             {params.split(',').map((param, i) => (
               <span key={i} className="rounded bg-neutral-700 p-2">
-                {param}: {JSON.stringify(result[selected].in[i])}
+                {param}: {JSON.stringify(testcases[selected].in[i])}
               </span>
             ))}
           </div>
@@ -50,7 +46,7 @@ export default function Testcases({ testcases, params }: Props) {
             <h3>Output</h3>
             {/* Displaying the output array */}
             <span className="rounded bg-neutral-700 p-2">
-              {JSON.stringify(result[selected].out)}
+              {JSON.stringify(testcases[selected].out)}
             </span>
           </div>
         </div>

@@ -7,7 +7,7 @@ import Navbar from '@/components/Navbar';
 
 export default async function Page({ params }: { params: { slug: string } }) {
   const session = await getServerSession(authOptions);
-  const { result, error } = (await getDocument('problem', params.slug)) as {
+  const { result, error } = (await getDocument('unverified', params.slug)) as {
     result: Problem;
     error: string;
   };

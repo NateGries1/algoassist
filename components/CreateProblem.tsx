@@ -198,34 +198,28 @@ export default function CreateProblem() {
     }
 
     if (problemPreview) {
-        const [viewPreview, setViewPreview] = useState(false);
-        const router = useRouter();
-
         return (
-            <div className="flex flex-col gap-6 mt-8">
-                {/* Action Buttons */}
-                <div className="flex flex-wrap gap-4">
-                    <button
-                    onClick={() => setFormData(initialForm)}
-                    className="px-4 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition"
-                    >
-                    Create Another Problem
-                    </button>
-                    <button
-                    onClick={() => router.push('/problems')}
-                    className="px-4 py-2 rounded-xl bg-gray-700 text-white hover:bg-gray-800 transition"
-                    >
-                    View All Problems
-                    </button>
-                    {!viewPreview && (
-                    <button
-                        onClick={() => setViewPreview(true)}
-                        className="px-4 py-2 rounded-xl bg-green-600 text-white hover:bg-green-700 transition"
-                    >
-                        Preview Problem
-                    </button>
-                    )}
-                </div>
+            <div className="flex h-[100vh] justify-center items-center flex-wrap gap-4">
+                <button
+                onClick={() => { setFormData(initialForm); setViewPreview(false); setProblemPreview(null); }}
+                className="px-4 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition"
+                >
+                Create Another Problem
+                </button>
+                <button
+                onClick={() => router.push('/problems')}
+                className="px-4 py-2 rounded-xl bg-gray-700 text-white hover:bg-gray-800 transition"
+                >
+                View All Problems
+                </button>
+                {!viewPreview && (
+                <button
+                    onClick={() => setViewPreview(true)}
+                    className="px-4 py-2 rounded-xl bg-green-600 text-white hover:bg-green-700 transition"
+                >
+                    Preview Problem
+                </button>
+                )}
             </div>
         );
     }
@@ -348,7 +342,7 @@ const ValidateProblem = (formData: FormData, setFormData: React.Dispatch<React.S
         setFormData({ ...formData, functionNameError: 'Include a function name' });
         hasError = true;
     } else if (!functionNameRegex.test(formData.functionName)) {
-        setFormData({ ...formData, functionNameError: 'Title must be in camelCase.' });
+        setFormData({ ...formData, functionNameError: 'Title must be in camelCase and contain no numbers.' });
         hasError = true;
     } else if (keywords.has(formData.functionName)) {
         setFormData({ ...formData, functionNameError: 'Title cannot be a reserved keyword.' });
@@ -366,17 +360,15 @@ const ValidateProblem = (formData: FormData, setFormData: React.Dispatch<React.S
     }
 
     // Parameter validation
+    const paramRegex = /^[a-z][a-zA-Z0-9_]*$/;
     if (formData.parameters.length === 0) {
         setFormData({ ...formData, paramError: 'Please add at least one parameter.' });
         hasError = true;
-    } else {
-        setFormData({ ...formData, paramError: '' });
-    }
-
-    const paramRegex = /^[a-z][a-zA-Z0-9_]*$/;
-    if (formData.paramNames.some(param => !paramRegex.test(param))) {
+    } else if (formData.paramNames.some(param => !paramRegex.test(param))) {
         setFormData({ ...formData, paramError: 'Parameters can only contain letters and underscores.' });
         hasError = true;
+    } else {
+        setFormData({ ...formData, paramError: '' });
     }
 
     // Description validation

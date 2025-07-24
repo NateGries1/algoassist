@@ -13,7 +13,9 @@ export default async function Page({ params }: { params: { slug: string } }) {
   };
 
   if (session?.user?.email) { 
-    return <ProblemLayout result={result} />;
+    return <ProblemLayout
+    result={result}
+    />;
   }
 
   return (

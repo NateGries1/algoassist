@@ -26,13 +26,15 @@ enum SupportedLanguages {
 
 type Props = {
   result: ProblemType;
+  viewPreview?: boolean;
+  setViewPreview?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const DyanmicCodeEditor = dynamic(() => import('@/components/CodeEditor'), {
+const DynamicCodeEditor = dynamic(() => import('@/components/CodeEditor'), {
   ssr: false
 });
 
-export default function Problem({ result }: Props) {
+export default function Problem({ result, viewPreview, setViewPreview }: Props) {
   const [executionResult, setExecutionResult] = React.useState<ExecutionResult>({
     language: '',
     version: '',
@@ -116,17 +118,25 @@ export default function Problem({ result }: Props) {
       localStorage.setItem('codeValue', codeValue);
       localStorage.setItem('problemName', result.title);
       localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
-
     }
   }, [isFinished]);
+
   return (  
     <>
-    <div className="absolute right-0 w-[170px]">
-      <Navbar/>
-    </div>
+    <Navbar />
+    { viewPreview && (
+      <button
+        onClick={() => setViewPreview ? setViewPreview(false) : console.log("setViewPreview not defined")}
+        className="fixed top-0 right-0 m-0 p-0 bg-transparent border-none text-gray-500 hover:text-gray-600 text-[40px] font-light z-50 leading-[0] h-[40px]"
+        aria-label="Close Preview"
+      >
+        &times;
+      </button>
+    )}
+
     <div className="relative h-screen w-full grid md:grid-cols-2">
       {!hasStarted && (
-        <div className="fixed inset-0 z-50 bg-slate-950 bg-opacity-50 backdrop-blur-md flex items-center justify-center">
+        <div className="fixed inset-0 z-40 bg-slate-950 bg-opacity-50 backdrop-blur-md flex items-center justify-center">
           <div className="bg-black/50 border border-gray-500 text-white rounded-lg p-8 max-w-xl w-full text-center space-y-6">
             <h2 className="text-4xl font-bold pt-5 px-5">Ready to start your interview? </h2>
             <p className="text-lg text-gray-300">This interview will take {Math.floor(timeLeft / 60)} minutes to complete.</p>
@@ -181,15 +191,14 @@ export default function Problem({ result }: Props) {
       )}
 
       {isMobile ? (
-        <div className="flex flex-col min-h-screen w-full">
+        <div className="flex flex-col min-h-screen w-[100vw] min-w-[340px]">
           {/* Problem Section */}
           <div className="p-4 bg-neutral-800">
-            <div className='flex flex-1 flex-wrap justify-end min-w-0 gap-x-2 gap-y-2'>
-              <p className="text-2xl mt-4">
+            <div className='flex flex-1 flex-wrap justify-end items-center min-w-0 gap-x-2 gap-y-2 mr-12 mt-1 z-20'>
+              <button onClick={() =>setIsFinished(true)} className="text-white bg-red-500 font-semibold px-3 py-2 rounded-lg">End Interview</button>
+              <p className="text-2xl">
                 {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
               </p>
-              <a href="/" className="text-white bg-purple-500 font-semibold px-3 py-2 rounded-lg">Home</a>
-              <button onClick={() =>setIsFinished(true)} className="text-white bg-red-500 font-semibold px-3 py-2 rounded-lg">End Interview</button>
             </div>
             <h1 className="text-2xl font-bold mb-4 text-white">
               {result.lc_number}: {result.title[0].toUpperCase() + result.title.slice(1).toLowerCase()}
@@ -238,7 +247,7 @@ export default function Problem({ result }: Props) {
 
           {/* Code Editor */}
           <div className="flex-grow bg-neutral-800 min-h-[70vh]">
-            <DyanmicCodeEditor
+            <DynamicCodeEditor
               problem={result}
               setExecutionResult={setExecutionResult}
               currentLanguage={currentLanguage}
@@ -258,11 +267,8 @@ export default function Problem({ result }: Props) {
                 <PanelGroup direction="vertical">
                   <Panel defaultSize={45} minSize={2} className="rounded-lg">
                     <div className="overflow-y-auto bg-neutral-800 p-4 h-full rounded-lg">
-                      <div className='flex flex-1 flex-wrap justify-between items-center min-w-0 gap-y-2'>
-                        <div className="space-x-2">
-                          <a href="/" className="text-white bg-purple-500 font-semibold px-3 py-2 rounded-lg">Home</a>
-                          <button onClick={() =>setIsFinished(true)} className="text-white bg-red-500 font-semibold px-3 py-2 rounded-lg">End Interview</button>
-                        </div>
+                      <div className='flex flex-1 flex-wrap justify-end items-center min-w-0 gap-x-2'>
+                        <button onClick={() =>setIsFinished(true)} className="relative z-20 text-white bg-red-500 font-semibold px-3 py-2 rounded-lg">End Interview</button>
                         <p className="text-2xl">
                           {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
                         </p>
@@ -340,7 +346,7 @@ export default function Problem({ result }: Props) {
             <Panel defaultSize={55} minSize={1} className="w-full h-screen">
               {/* Right side: Code editor */}
               <div className="h-screen w-full rounded-lg">
-                <DyanmicCodeEditor
+                <DynamicCodeEditor
                   problem={result}
                   setExecutionResult={setExecutionResult}
                   currentLanguage={currentLanguage}

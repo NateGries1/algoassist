@@ -127,7 +127,7 @@ export default function CodeEditor({
 
   return (
     <div className="relative flex h-full flex-col">
-      <div className="flex w-full justify-between bg-neutral-800">
+      <div className="flex w-full bg-neutral-800">
         <select
           id="language_selector"
           className="rounded border border-transparent bg-transparent px-2 text-xs shadow-xl hover:cursor-pointer hover:bg-neutral-700 focus:outline-none"

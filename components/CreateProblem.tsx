@@ -193,39 +193,53 @@ export default function CreateProblem() {
         return (
             <Problem
                 result={problemPreview}
+                viewPreview={viewPreview}
+                setViewPreview={setViewPreview}
             />
-        );
-    }
-
-    if (problemPreview) {
-        return (
-            <div className="flex h-[100vh] justify-center items-center flex-wrap gap-4">
-                <button
-                onClick={() => { setFormData(initialForm); setViewPreview(false); setProblemPreview(null); }}
-                className="px-4 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition"
-                >
-                Create Another Problem
-                </button>
-                <button
-                onClick={() => router.push('/problems')}
-                className="px-4 py-2 rounded-xl bg-gray-700 text-white hover:bg-gray-800 transition"
-                >
-                View All Problems
-                </button>
-                {!viewPreview && (
-                <button
-                    onClick={() => setViewPreview(true)}
-                    className="px-4 py-2 rounded-xl bg-green-600 text-white hover:bg-green-700 transition"
-                >
-                    Preview Problem
-                </button>
-                )}
-            </div>
         );
     }
 
     return (
         <>
+            {problemPreview && (
+                <div className="fixed inset-0 z-50 backdrop-blur-sm bg-black/30 flex items-center justify-center">
+                    <div className="relative font-poppins text-center bg-neutral-800 border-[0.5px] border-gray-300 rounded-[2rem] p-8 shadow-lg w-[90%] max-w-lg gap-y-3">
+                        <div className="absolute top-0 left-1/2 -translate-y-1/2 -translate-x-1/2 shadow-[0px_6.85px_19.88px_5.48px_rgba(136,57,225,0.5)] w-[150px] h-[150px] flex items-center justify-center rounded-full bg-purple-600 text-white">
+                            <img src="checkmark.svg" alt="checkmark" className="w-[96px]"/>
+                        </div>
+                        <div className="flex justify-between font-light mb-8">
+                            <button
+                            onClick={() => router.push('/')}
+                            className="px-3 py-1 rounded-full bg-purple-600 text-white hover:bg-purple-700"
+                            >
+                                Homepage
+                            </button>
+                            <button
+                            onClick={() => router.push('/problems')}
+                            className="px-3 py-1 rounded-full bg-purple-600 text-white hover:bg-purple-700"
+                            >
+                                All Problems
+                            </button>
+                        </div>
+                        <h2 className="text-white font-normal leading-tight text-[32px]">Problem <br/> Successfully Created!</h2>
+                        <p className="mt-2 text-gray-400 font-light italic text-[12px]">Your problem has been submitted and is awaiting review. <br/> Explore other problems or preview yours now!</p>
+                        <div className="flex flex-col items-center gap-y-3 mt-4">
+                            <button
+                            onClick={() => setViewPreview(true)}
+                            className="px-3 py-1 rounded-full bg-purple-600 text-white hover:bg-purple-700"
+                            >
+                                Preview Problem
+                            </button>
+                            <button
+                            onClick={() => {setProblemPreview(null); setFormData(initialForm);}}
+                            className="px-3 py-1 rounded-full bg-purple-600 text-white hover:bg-purple-700"
+                            >
+                                Create Another Problem
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
             <Navbar />
             <div className="flex flex-col justify-center mt-12 px-1 mx-auto">
                 <h1 className="mx-auto text-[48px] text-center pt-10 bg-gradient-to-r from-purple-600 to-white bg-clip-text text-transparent">Create a New Problem!</h1>

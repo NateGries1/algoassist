@@ -334,85 +334,86 @@ export default function CreateProblem() {
 }
 
 const ValidateProblem = (formData: FormData, setFormData: React.Dispatch<React.SetStateAction<FormData>>) => {
+    const newErrors: any = {};
     let hasError = false;
     const titleRegex = /^[a-zA-Z0-9 ]+$/;
     // Title validation
     if (!formData.titleName) {
-        setFormData({ ...formData, titleError: 'Enter a title' });
+        newErrors.titleError = 'Enter a title';
         hasError = true;
     } else if (!titleRegex.test(formData.titleName)) {
-        setFormData({ ...formData, titleError: 'Title can only contain alphanumeric characters and spaces.' });
+        newErrors.titleError = 'Title can only contain alphanumeric characters and spaces.';
         hasError = true;
     } else if (keywords.has(formData.titleName)) {
-        setFormData({ ...formData, titleError: 'Title cannot be a reserved keyword.' });
+        newErrors.titleError = 'Title cannot be a reserved keyword.';
         hasError = true;
     } else {
-        setFormData({ ...formData, titleError: '' });
+        newErrors.titleError = '';
     }
 
     // Function name validation
     const functionNameRegex = /^[a-z][a-zA-Z]*$/;
     if (!formData.functionName) {
-        setFormData({ ...formData, functionNameError: 'Include a function name' });
+        newErrors.functionNameError = 'Include a function name';
         hasError = true;
     } else if (!functionNameRegex.test(formData.functionName)) {
-        setFormData({ ...formData, functionNameError: 'Title must be in camelCase and contain no numbers.' });
+        newErrors.functionNameError = 'Title must be in camelCase and contain no numbers.';
         hasError = true;
     } else if (keywords.has(formData.functionName)) {
-        setFormData({ ...formData, functionNameError: 'Title cannot be a reserved keyword.' });
+        newErrors.functionNameError = 'Title cannot be a reserved keyword.';
         hasError = true;
     } else {
-        setFormData({ ...formData, functionNameError: '' });
+        newErrors.functionNameError = '';
     }
 
     // Leetcode number validation
     if (formData.lcNumber == 0) {
-        setFormData({ ...formData, lcError: 'Enter a valid Leetcode number.' });
+        newErrors.lcError = 'Enter a valid Leetcode number.';
         hasError = true;
     } else {
-        setFormData({ ...formData, lcError: '' });
+        newErrors.lcError = '';
     }
 
     // Parameter validation
     const paramRegex = /^[a-z][a-zA-Z0-9_]*$/;
     if (formData.parameters.length === 0) {
-        setFormData({ ...formData, paramError: 'Please add at least one parameter.' });
+        newErrors.paramError = 'Please add at least one parameter.';
         hasError = true;
     } else if (formData.paramNames.some(param => !paramRegex.test(param))) {
-        setFormData({ ...formData, paramError: 'Parameters can only contain letters and underscores.' });
+        newErrors.paramError = 'Parameters can only contain letters and underscores.';
         hasError = true;
     } else {
-        setFormData({ ...formData, paramError: '' });
+        newErrors.paramError = '';
     }
 
     // Description validation
     if (formData.description.trim() === '') {
-        setFormData({ ...formData, descriptionError: 'Description cannot be empty.' });
+        newErrors.descriptionError = 'Description cannot be empty.';
         hasError = true;
     } else {
-        setFormData({ ...formData, descriptionError: '' });
+        newErrors.descriptionError = '';
     }
 
     // Topics validation
     if (formData.selectedTopics.length === 0) {
-        setFormData({ ...formData, topicError: 'Please select at least one topic.' });
+        newErrors.topicError = 'Please select at least one topic.';
         hasError = true;
     } else {
-        setFormData({ ...formData, topicError: '' });
+        newErrors.topicError = '';
     }
 
     // Testcases validation
     if (formData.testcases.length < 3) {
-        setFormData({ ...formData, testcaseError: 'Please add at least 3 testcases.' });
+        newErrors.testcaseError = 'Please add at least 3 testcases.';
         hasError = true;
     } else {
-        setFormData({ ...formData, testcaseError: '' });
+        newErrors.testcaseError = '';
     }
 
     for (const testcase of formData.testcases) {
         const args = testcase.in;
         if (args.length !== formData.parameters.length) {
-            setFormData({ ...formData, testcaseError: `Testcase ${formData.testcases.indexOf(testcase) + 1} input length mismatch. Expected ${formData.parameters.length}, got ${args.length}.` });
+            newErrors.testcaseError = `Testcase ${formData.testcases.indexOf(testcase) + 1} input length mismatch. Expected ${formData.parameters.length}, got ${args.length}.`;
             hasError = true;
             break;
         }
@@ -422,12 +423,12 @@ const ValidateProblem = (formData: FormData, setFormData: React.Dispatch<React.S
             const expectedType = paramMappings[formData.parameters[i]];
             if (expectedType === 'array') {
                 if (Array.isArray(args[i]) == false) {
-                    setFormData({ ...formData, testcaseError: `Testcase ${formData.testcases.indexOf(testcase) + 1} input type mismatch for parameter ${i+1}. Expected ${expectedType}, got ${typeof args[i]}.` });
+                    newErrors.testcaseError = `Testcase ${formData.testcases.indexOf(testcase) + 1} input type mismatch for parameter ${i+1}. Expected ${expectedType}, got ${typeof args[i]}.`;
                     hasError = true;
                 }
             } else {
                 if (typeof args[i] !== expectedType) {
-                    setFormData({ ...formData, testcaseError: `Testcase ${formData.testcases.indexOf(testcase) + 1} input type mismatch for parameter ${i+1}. Expected ${expectedType}, got ${typeof args[i]}.` });
+                    newErrors.testcaseError = `Testcase ${formData.testcases.indexOf(testcase) + 1} input type mismatch for parameter ${i+1}. Expected ${expectedType}, got ${typeof args[i]}.`;
                     hasError = true;
                 }
             }
@@ -435,15 +436,20 @@ const ValidateProblem = (formData: FormData, setFormData: React.Dispatch<React.S
 
         if (paramMappings[formData.returnType] === 'array') {
             if (!Array.isArray(testcase.out)) {
-                setFormData({ ...formData, testcaseError: `Testcase ${formData.testcases.indexOf(testcase) + 1} output type mismatch. Expected array, got ${typeof testcase.out}.` });
+                newErrors.testcaseError = `Testcase ${formData.testcases.indexOf(testcase) + 1} output type mismatch. Expected array, got ${typeof testcase.out}.`;
                 hasError = true;
             }
         } else if (typeof testcase.out !== paramMappings[formData.returnType]) {
-            setFormData({ ...formData, testcaseError: `Testcase ${formData.testcases.indexOf(testcase) + 1} output type mismatch. Expected ${paramMappings[formData.returnType]}, got ${typeof testcase.out}.` });
+            newErrors.testcaseError = `Testcase ${formData.testcases.indexOf(testcase) + 1} output type mismatch. Expected ${paramMappings[formData.returnType]}, got ${typeof testcase.out}.`;
             hasError = true;
         }
         if (hasError) break;
     }
 
-    return !hasError;
+    if (hasError) {
+        setFormData({ ...formData, ...newErrors });
+        return false;
+    } else {
+        return true;
+    }
 };
